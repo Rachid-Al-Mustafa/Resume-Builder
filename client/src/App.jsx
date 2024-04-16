@@ -7,6 +7,8 @@ import NotFound from './pages/notFound';
 import ForgotPassword from './pages/forgotPassword';
 import ResetPassword from './pages/resetPassword';
 import Home from './pages/home';
+import GetStarted from './pages/getStarted';
+import Templates from './pages/template';
 
 function App() {
   const protectedRoutes = [
@@ -14,14 +16,14 @@ function App() {
       path: '/home',
       element: <Home />,
     },
-    // {
-    //   path: `/profile/${user?.username}`,
-    //   element: <Profile />,
-    // },
-    // {
-    //   path: '/profile/:username',
-    //   element: <OtherUsersProfile />,
-    // },
+    {
+      path: `/getStarted`,
+      element: <GetStarted />,
+    },
+    {
+      path: '/Templates',
+      element: <Templates />,
+    },
     // {
     //   path: '/community/:id',
     //   element: <CommunityProfile />,
