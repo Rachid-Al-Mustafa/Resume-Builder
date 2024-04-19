@@ -14,11 +14,8 @@ const Header = () => {
         <Link to="/Templates" className="text-gray-600 hover:text-blue-500">
           Templates
         </Link>
-        <Link to="/home" className="text-gray-600 hover:text-blue-500">
-          Pricing
-        </Link>
-        <Link to="/home" className="text-gray-600 hover:text-blue-500">
-          Contact
+        <Link to="/profile" className="text-gray-600 hover:text-blue-500">
+          Profile
         </Link>
         <Link to="/">
           <Button text={'Log Out'} />

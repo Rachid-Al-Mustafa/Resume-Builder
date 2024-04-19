@@ -2,11 +2,14 @@
 import React, { useState } from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
+import EducationForm from '../components/educationForm';
+import PersonalInfoForm from '../components/personalInfoForm';
+import SkillsForm from '../components/skills';
 
 const steps = [
-  { name: 'Personal Info', component: <PersonalInfo /> },
-  { name: 'Education', component: <Education /> },
-  { name: 'Contact', component: <Contact /> },
+  { name: 'Personal Info', component: <PersonalInfoForm /> },
+  { name: 'Education', component: <EducationForm /> },
+  { name: 'Contact', component: <SkillsForm /> },
 ];
 
 function GetStarted() {
@@ -20,19 +23,19 @@ function GetStarted() {
     setCurrentStep(currentStep - 1);
   };
 
-  const Progress = () => {
-    return (
-      <>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div
-            className={`w-${
-              (currentStep + 1) * (100 / steps.length)
-            }% bg-blue-500 rounded-full h-2`}
-          ></div>
-        </div>
-      </>
-    );
-  };
+const Progress = () => {
+  return (
+    <>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div
+          className={`w-${
+            currentStep * (100 / (steps.length - 1))
+          }% bg-blue-500 rounded-full h-2`}
+        ></div>
+      </div>
+    </>
+  );
+};
 
   const FormContent = () => {
     return steps[currentStep].component;
@@ -77,59 +80,6 @@ function GetStarted() {
       <Footer />
     </>
   );
-}
-
-function PersonalInfo() {
-  return (
-    <>
-      <div className="flex flex-col gap-y-2 mb-6 mx-8">
-        <label className="justify-start text-gray-700 text-sm font-bold mb-2">
-          First name
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="firstName"
-          type="text"
-          placeholder="E.g.: Johny"
-        />
-        <label className="justify-start text-gray-700 text-sm font-bold mb-2">
-          Last name
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="firstName"
-          type="text"
-          placeholder="E.g.: Smith"
-        />
-        <label className="justify-start text-gray-700 text-sm font-bold mb-2">
-          Phone Number
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="firstName"
-          type="text"
-          placeholder="E.g.: 71 927 178"
-        />
-        <label className="justify-start text-gray-700 text-sm font-bold mb-2">
-          Email
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="firstName"
-          type="text"
-          placeholder="E.g.: emaple@gmail.com"
-        />
-      </div>
-    </>
-  );
-}
-
-function Education() {
-  // ... Education form fields and logic
-}
-
-function Contact() {
-  // ... Contact form fields and logic
 }
 
 export default GetStarted;

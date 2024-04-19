@@ -4,6 +4,7 @@ import Button from '../components/button';
 import { Link } from 'react-router-dom';
 import Header from '../components/header';
 import Footer from '../components/footer';
+import Card from '../components/card';
 
 function Home() {
   return (
@@ -35,6 +36,28 @@ function Home() {
             eu leo quam.
           </p>
         </main>
+        <div className="flex flex-col lg:flex-row lg:flex-wrap gap-2 my-4">
+          <Card
+            title={'euhf'}
+            description={'hsfyebsf uhfiuef eifug eiufe ef e'}
+            image={'../assets/hero.png'}
+          />
+          <Card
+            title={'euhf'}
+            description={'hsfyebsf uhfiuef eifug eiufe ef e'}
+            image={'../assets/hero.png'}
+          />
+          <Card
+            title={'euhf'}
+            description={'hsfyebsf uhfiuef eifug eiufe ef e'}
+            image={'../assets/hero.png'}
+          />
+          <Card
+            title={'euhf'}
+            description={'hsfyebsf uhfiuef eifug eiufe ef e'}
+            image={'../assets/hero.png'}
+          />
+        </div>
       </div>
       <Footer />
     </>

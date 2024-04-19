@@ -9,6 +9,7 @@ import ResetPassword from './pages/resetPassword';
 import Home from './pages/home';
 import GetStarted from './pages/getStarted';
 import Templates from './pages/template';
+import Profile from './pages/Profile/index';
 
 function App() {
   const protectedRoutes = [
@@ -24,10 +25,10 @@ function App() {
       path: '/Templates',
       element: <Templates />,
     },
-    // {
-    //   path: '/community/:id',
-    //   element: <CommunityProfile />,
-    // },
+    {
+      path: '/profile',
+      element: <Profile />,
+    },
     // {
     //   path: '/notifications',
     //   element: <SmNotifications />,

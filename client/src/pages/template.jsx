@@ -23,7 +23,6 @@ function Templates() {
   const Progress = () => {
     return (
       <>
-        <Header />
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
             className={`w-${
@@ -31,7 +30,6 @@ function Templates() {
             }% bg-blue-500 rounded-full h-2`}
           ></div>
         </div>
-        <Footer />
       </>
     );
   };
@@ -69,11 +67,11 @@ function Templates() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Progress />
-      <FormContent />
-      <ButtonGroup />
-    </div>
+    <>
+      <Header />
+      <div className="container mx-auto px-4 py-8"></div>
+      <Footer />
+    </>
   );
 }
 
