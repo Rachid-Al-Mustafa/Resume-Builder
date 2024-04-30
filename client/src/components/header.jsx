@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
-    <div className="flex justify-between px-8 py-4 bg-white shadow-md mb-8 w-full">
+    <div className="flex justify-between px-8 py-4 bg-white shadow-md w-full">
       <h1 className="text-xl font-bold text-gray-800">Resume Builder</h1>
       <nav className="space-x-4">
         <Link to="/home" className="text-gray-600 hover:text-blue-500">
