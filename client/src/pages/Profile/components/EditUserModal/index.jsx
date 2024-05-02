@@ -2,21 +2,24 @@
 import { GrClose } from 'react-icons/gr';
 import Input from '../../../../components/input';
 import { handleCloseModal } from '../../../../utils/closeModal';
+// eslint-disable-next-line no-unused-vars
 import { useContext, useEffect, useRef, useState } from 'react';
 import { handleChange } from '../../../../utils/handleChange';
-import { postRequest } from '../../../../utils/requests';
+// import { postRequest } from '../../../../utils/requests';
 // import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 const index = ({ setShowEditUserModal }) => {
-  const { user, dispatch } = useContext();
-  const { name } = user;
-  const { location, bio, nickname } = user.profile;
+  // const { user, dispatch } = useContext();
+  const { name } = { name: 'Raed Al Mustafa' };
+  const { location, bio } = {
+    location: '',
+    bio: '',
+  };
   // eslint-disable-next-line no-unused-vars
   const [value, setValue] = useState(null);
 
   let [inputs, setInputs] = useState({
     name: name || '',
-    nickname: nickname || '',
     location: location || '',
     bio: bio || '',
   });
@@ -27,10 +30,10 @@ const index = ({ setShowEditUserModal }) => {
   };
 
   const handleEditUserInfo = async () => {
-    dispatch({ type: 'EDIT_USER_INFO', payload: inputs });
+    // dispatch({ type: 'EDIT_USER_INFO', payload: inputs });
     setShowEditUserModal(false);
 
-    await postRequest('/user/edit-profile', inputs);
+    // await postRequest('/user/edit-profile', inputs);
   };
 
   const closeModal = (e) => handleCloseModal(e, boxRef, setShowEditUserModal);
@@ -66,18 +69,14 @@ const index = ({ setShowEditUserModal }) => {
           <Input
             label="Name"
             name="name"
+            placeholder="Your Name"
             value={inputs.name}
-            handleChange={handleInputChange}
-          />
-          <Input
-            label="Nickname"
-            name="nickname"
-            value={inputs.nickname}
             handleChange={handleInputChange}
           />
           <Input
             label="Location"
             name="location"
+            placeholder="Your Location"
             value={inputs.location}
             handleChange={handleInputChange}
           />
@@ -94,17 +93,16 @@ const index = ({ setShowEditUserModal }) => {
             </label>
             <textarea
               id="about"
-              onChange={handleInputChange}
               name="bio"
+              placeholder="Descripe Yourself!"
               className="p-2 rounded-md border-2 bg-transparent outline-none scrollbar-hide h-[100px]"
               type="text"
               value={inputs.bio}
+              onChange={handleInputChange}
             />
-          </div>
-          <div>
             <button
               type="submit"
-              className="bg-primary text-white p-2 rounded-md mt-4 font-medium"
+              className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
             >
               Save changes
             </button>

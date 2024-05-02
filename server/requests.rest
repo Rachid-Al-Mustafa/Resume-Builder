@@ -1,0 +1,219 @@
+// Register
+POST http://localhost:3000/api/register
+Content-Type : application/json
+
+{
+    "name" : "userTwo",
+    "username" : "userTwo",
+    "email" : "userTwo@gmail.com",
+    "password" : "userTwo"
+}
+
+###
+// Login
+POST http://localhost:3000/api/login
+Content-Type : application/json
+
+{
+    "email" : "userTwo@gmail.com",
+    "password" : "userTwo"
+}
+
+###
+// logout
+POST http://localhost:3000/api/logout
+Content-Type: application/json
+
+{
+    "userId" : "6501ade2df9642bad1367736"
+}
+
+###
+// Edit user info
+POST http://localhost:3000/api/user/edit-profile
+Content-Type : application/json
+Authorization : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmNkOWJhMzg4MTcxYjcyNjM3ZDYyZCIsImlhdCI6MTY5NDI5MjQyOH0.YRmvDT-PirijeM7_uqUARCcFMu-p3odjB4IgUqWfD6o
+
+{
+    "profileImage" : "new-new-profile-image.jpg",
+    "coverImage" : "new-cover-image.jpg",
+    "nickname" : "New Nickname",
+    "major" : "New Major",
+    "university" : "New University",
+    "location" : "New Location",
+    "bio" : "New Bio",
+    "skills" : ["Skill 1", "Skill 2"]
+}
+
+
+// get a specific user data
+###
+GET http://localhost:3000/api/user/carla
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjc2NTZmOGM3M2IwNWRmMTM2NTU1OSIsImlhdCI6MTY5NDI1Mzg2OH0.WFrUU8W7Xju1NAlnXE3H0vua4JQ8AxAYLiBeKSvXubU
+
+// search for users and communities
+###
+GET http://localhost:3000/api/user/search/akram
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmU0NDE1MmQwNGMwYzhkNzE5ZGI4YSIsImlhdCI6MTY5NDQyOTc2OCwiZXhwIjoxNjk0NDMzMzY4fQ.DkH4qdUJBWwydxpa8hJ6W9HcPw3A4wzou5auLP9E-SA
+
+// search for users to invite 
+###
+GET http://localhost:3000/api/user/search/rac/64fc501335e3102409bc028e
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjc2NTZmOGM3M2IwNWRmMTM2NTU1OSIsImlhdCI6MTY5NDI1NzM1OX0.-J3gukVTyBcwN0yDSjXXEdY6hGN7StjB3mfgEpDrWBY
+
+// get a specific user friends
+###
+GET http://localhost:3000/api/user/friends/64fe547a14637f6200500d2a
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmU0NDE1MmQwNGMwYzhkNzE5ZGI4YSIsImlhdCI6MTY5NDQ0NzYwNSwiZXhwIjoxNjk0NDUxMjA1fQ.ypksY5Qo6Y6L-Cn3QEyHydax4ANJYX77cRnNzSz5krg
+
+// create a community
+###
+POST http://localhost:3000/api/community/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmU0NDE1MmQwNGMwYzhkNzE5ZGI4YSIsImlhdCI6MTY5NDUxMTkyMCwiZXhwIjoxNjk0NTE1NTIwfQ.DfiVuNCRYVpo3zjdO7oFxOrC8jOTb_wGAqb482SZcP4
+
+{
+    "name" : "Coding Community",
+    "description" : "This is a coding community",
+    "privacy" : "private"
+}
+
+// get a community
+###
+GET http://localhost:3000/api/community/64fc44206036e55f0754642b
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjc2NTZmOGM3M2IwNWRmMTM2NTU1OSIsImlhdCI6MTY5NDI1Mzg2OH0.WFrUU8W7Xju1NAlnXE3H0vua4JQ8AxAYLiBeKSvXubU
+
+// delete a community
+###
+POST http://localhost:3000/api/community/delete/64fc4f9b35e3102409bc0285
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjc2NTZmOGM3M2IwNWRmMTM2NTU1OSIsImlhdCI6MTY5NDI1NTU2M30.KD6XMlPsIlCgJiUjcYz73WUnum8aGvMwKAc4OQsAA20
+
+// update a community
+###
+POST http://localhost:3000/api/community/update/64fc501335e3102409bc028e
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjc2NTZmOGM3M2IwNWRmMTM2NTU1OSIsImlhdCI6MTY5NDI1NzM1OX0.-J3gukVTyBcwN0yDSjXXEdY6hGN7StjB3mfgEpDrWBY
+
+{
+    "name" : "First community updated",
+    "description" : "First community description updated"
+}
+
+// add members to a community
+###
+POST http://localhost:3000/api/community/64fc501335e3102409bc028e/add-members
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjc2NTZmOGM3M2IwNWRmMTM2NTU1OSIsImlhdCI6MTY5NDI1NzM1OX0.-J3gukVTyBcwN0yDSjXXEdY6hGN7StjB3mfgEpDrWBY
+
+{
+    "userIds" : ["64fc602d9b5525054d890830", "64fc602d9b5525054d890830"]
+}
+
+// remove members from a community
+###
+POST http://localhost:3000/api/community/64fc501335e3102409bc028e/remove-members
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Zjc2NTZmOGM3M2IwNWRmMTM2NTU1OSIsImlhdCI6MTY5NDI1NzM1OX0.-J3gukVTyBcwN0yDSjXXEdY6hGN7StjB3mfgEpDrWBY
+
+{
+    "userIds" : ["64ec7987bad32b2defccf98f", "64fc602d9b5525054d890830"]
+}
+
+
+
+// Friend Requests
+
+// get a friendship
+###
+GET http://localhost:3000/api/friendship/tsee
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmU0NDE1MmQwNGMwYzhkNzE5ZGI4YSIsImlhdCI6MTY5NDUyNDg2NywiZXhwIjoxNjk0NTI4NDY3fQ.13j67Vm05ARvetYEe3w9E1XV1TYPS4CH5Oy6XC7F2LI
+
+// send a friend request
+
+// user one sends a friend request to user two
+###
+POST http://localhost:3000/api/friendship/send-friend-request/650705ebf1a1e0158e8bdc70
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDcwNWUwZjFhMWUwMTU4ZThiZGM2YyIsImlhdCI6MTY5NDk1OTEwN30.rlA0Fj0oybwEAr4B6D-qX8NZc575aQ9uXsJoSCySQ3s
+
+// user two sends a friend request to user one
+###
+POST http://localhost:3000/api/friendship/send-friend-request/650705e0f1a1e0158e8bdc6c
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDcwNWViZjFhMWUwMTU4ZThiZGM3MCIsImlhdCI6MTY5NDk1OTEzMn0.P3T2Usc6A5OHWm0I-fN5oJ6wms4WZm-9WemDxDK8Ch4
+
+// reject a friend request
+
+// user one rejects user two
+###
+POST http://localhost:3000/api/friendship/reject-friend-request/650705ebf1a1e0158e8bdc70
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDcwNWUwZjFhMWUwMTU4ZThiZGM2YyIsImlhdCI6MTY5NDk1OTEwN30.rlA0Fj0oybwEAr4B6D-qX8NZc575aQ9uXsJoSCySQ3s
+
+// user two rejects user one
+###
+POST http://localhost:3000/api/friendship/reject-friend-request/650705e0f1a1e0158e8bdc6c
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDcwNWViZjFhMWUwMTU4ZThiZGM3MCIsImlhdCI6MTY5NDk1OTEzMn0.P3T2Usc6A5OHWm0I-fN5oJ6wms4WZm-9WemDxDK8Ch4
+
+
+// accept a friend request
+
+// user one accepts user two
+###
+POST http://localhost:3000/api/friendship/accept-friend-request/650705ebf1a1e0158e8bdc70
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDcwNWUwZjFhMWUwMTU4ZThiZGM2YyIsImlhdCI6MTY5NDk1OTEwN30.rlA0Fj0oybwEAr4B6D-qX8NZc575aQ9uXsJoSCySQ3s
+
+// user two accepts user one
+###
+POST http://localhost:3000/api/friendship/accept-friend-request/650705e0f1a1e0158e8bdc6c
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MDcwNWViZjFhMWUwMTU4ZThiZGM3MCIsImlhdCI6MTY5NDk1OTEzMn0.P3T2Usc6A5OHWm0I-fN5oJ6wms4WZm-9WemDxDK8Ch4
+
+
+// Private chat
+
+// create a new private conversation
+###
+POST http://localhost:3000/api/privateChat/newPrivateConversation
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWM3OTg3YmFkMzJiMmRlZmNjZjk4ZiIsImlhdCI6MTY5NDI3NDY2Nn0.QzPrr30diUcUtC_SJKdGcCUV1I9W4XPfCAUcyLoaW4o
+
+{
+    "userOne" : "64fc602d9b5525054d890830",
+    "userTwo" : "64ec7987bad32b2defccf98f"
+}
+
+
+// send community join request
+###
+POST http://localhost:3000/api/community/send-community-join-request/64fe547a14637f6200500d2a
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWM3OTg3YmFkMzJiMmRlZmNjZjk4ZiIsImlhdCI6MTY5NDQ1MjIzMSwiZXhwIjoxNjk0NDU1ODMxfQ.nS8b9LT-RYYVONQfG4jqDx7RVplSY7bfXUunolsWlIE
+
+// accept community join request
+###
+POST http://localhost:3000/api/community/accept-community-join-request/64fe547a14637f6200500d2a/64ec7987bad32b2defccf98f
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmU0NDE1MmQwNGMwYzhkNzE5ZGI4YSIsImlhdCI6MTY5NDQ1MjI4NSwiZXhwIjoxNjk0NDU1ODg1fQ.M4M8v6KQkxmj4iOIyD_HJSBTMxA9vB-ToHvmP_0Ir2M
+
+// send community invite request
+###
+POST http://localhost:3000/api/community/send-community-invite-request/6500335fde9949be1480c711/64fe44232d04c0c8d719db8e
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmU0NDE1MmQwNGMwYzhkNzE5ZGI4YSIsImlhdCI6MTY5NDUxMTkyMCwiZXhwIjoxNjk0NTE1NTIwfQ.DfiVuNCRYVpo3zjdO7oFxOrC8jOTb_wGAqb482SZcP4
+
+// cancel community invite request
+###
+POST http://localhost:3000/api/community/cancel-community-invite-request/6500335fde9949be1480c711/64fe44232d04c0c8d719db8e
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZmU0NDE1MmQwNGMwYzhkNzE5ZGI4YSIsImlhdCI6MTY5NDUxMTkyMCwiZXhwIjoxNjk0NTE1NTIwfQ.DfiVuNCRYVpo3zjdO7oFxOrC8jOTb_wGAqb482SZcP4
+

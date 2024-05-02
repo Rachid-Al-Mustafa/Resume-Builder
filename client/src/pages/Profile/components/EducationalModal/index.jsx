@@ -10,8 +10,11 @@ import { handleChange } from '../../../../utils/handleChange';
 // import { useDebounce } from 'use-debounce';
 
 const index = ({ setShowEducationalInfoModal }) => {
-  const { user, dispatch } = useContext();
-  const { university, major } = user.profile;
+  // const { user, dispatch } = useContext();
+  const { university, major } = {
+    university: 'LIU',
+    major: 'Computer Science',
+  };
 
   const [inputs, setInputs] = useState({
     university: university || '',
@@ -29,10 +32,10 @@ const index = ({ setShowEducationalInfoModal }) => {
   };
 
   const handleEditEducationalInfo = async () => {
-    dispatch({ type: 'EDIT_EDUCATIONAL_INFO', payload: inputs });
+    // dispatch({ type: 'EDIT_EDUCATIONAL_INFO', payload: inputs });
     setShowEducationalInfoModal(false);
 
-    await postRequest('/user/edit-profile', inputs);
+    // await postRequest('/user/edit-profile', inputs);
   };
 
   //   useEffect(() => {
@@ -78,6 +81,7 @@ const index = ({ setShowEducationalInfoModal }) => {
           <div className="relative">
             <Input
               label="University"
+              placeholder="Your University"
               name="university"
               value={inputs.university}
               handleChange={handleInputsChange}
@@ -107,18 +111,17 @@ const index = ({ setShowEducationalInfoModal }) => {
           </div>
           <Input
             label="Major"
+            placeholder="Your Major"
             name="major"
             value={inputs.major}
             handleChange={handleInputsChange}
           />
-          <div>
-            <button
-              type="submit"
-              className="bg-primary text-white p-2 rounded-md mt-4 font-medium"
-            >
-              Save changes
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
+          >
+            Save changes
+          </button>
         </div>
       </form>
     </div>

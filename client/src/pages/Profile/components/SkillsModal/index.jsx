@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+// eslint-disable-next-line no-unused-vars
 import { useContext, useEffect, useRef, useState } from 'react';
 import { handleCloseModal } from '../../../../utils/closeModal';
 import { GrClose } from 'react-icons/gr';
@@ -6,7 +7,7 @@ import Skill from './../Skill';
 import { postRequest } from '../../../../utils/requests';
 
 const index = ({ setShowSkillsModal, skills }) => {
-  const { dispatch } = useContext();
+  // const { dispatch } = useContext();
 
   let [selectedSkills, setSelectedSkills] = useState([]);
   let [skillInput, setSkillInput] = useState('');
@@ -32,7 +33,7 @@ const index = ({ setShowSkillsModal, skills }) => {
   };
 
   const handleEditSkills = async () => {
-    dispatch({ type: 'EDIT_SKILLS', payload: selectedSkills });
+    // dispatch({ type: 'EDIT_SKILLS', payload: selectedSkills });
     setShowSkillsModal(false);
 
     await postRequest('/user/edit-profile', { skills: selectedSkills });
@@ -73,7 +74,7 @@ const index = ({ setShowSkillsModal, skills }) => {
               onChange={(e) => setSkillInput(e.target.value)}
             />
           </form>
-          {selectedSkills.length > 0 && (
+          {selectedSkills?.length > 0 && (
             <div className="flex items-center flex-wrap gap-4 py-3.5 max-h-[300px] overflow-y-scroll overflow-x-hidden scrollbar-hide">
               {selectedSkills.map((skill, index) => (
                 <Skill
@@ -87,14 +88,13 @@ const index = ({ setShowSkillsModal, skills }) => {
               ))}
             </div>
           )}
-          <div>
-            <button
-              onClick={handleEditSkills}
-              className="bg-primary text-white p-2 rounded-md mt-4 font-medium"
-            >
-              Save changes
-            </button>
-          </div>
+          <button
+            onClick={handleEditSkills}
+            className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
+          >
+            Save changes
+          </button>
+          <div></div>
         </div>
       </div>
     </div>

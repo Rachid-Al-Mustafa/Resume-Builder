@@ -6,15 +6,7 @@ import EducationForm from '../components/educationForm';
 import PersonalInfoForm from '../components/personalInfoForm';
 import SkillsForm from '../components/skills';
 
-const steps = [
-  { name: 'Personal Info', component: <PersonalInfoForm /> },
-  { name: 'Education', component: <EducationForm /> },
-  { name: 'Contact', component: <SkillsForm /> },
-];
-
 function GetStarted() {
-  const [currentStep, setCurrentStep] = useState(0);
-
   const nextStep = () => {
     setCurrentStep(currentStep + 1);
   };
@@ -22,20 +14,61 @@ function GetStarted() {
   const prevStep = () => {
     setCurrentStep(currentStep - 1);
   };
+  const steps = [
+    {
+      name: 'Personal Info',
+      component: <PersonalInfoForm nextStep={nextStep} />,
+    },
+    { name: 'Education', component: <EducationForm nextStep={nextStep} /> },
+    { name: 'Contact', component: <SkillsForm /> },
+  ];
 
-const Progress = () => {
-  return (
-    <>
-      <div className="w-full bg-gray-200 rounded-full h-2">
-        <div
-          className={`w-${
-            currentStep * (100 / (steps.length - 1))
-          }% bg-blue-500 rounded-full h-2`}
-        ></div>
-      </div>
-    </>
-  );
-};
+  const [currentStep, setCurrentStep] = useState(0); 
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (isSubmitting) return;
+  //   setIsSubmitting(true);
+  //   try {
+  //     const response = await axios.post(
+  //       'http://localhost:8000/api/create',
+  //       formData
+  //     );
+  //     if (response.status === 200) {
+  //       Swal.fire({
+  //         icon: 'success',
+  //         title: 'Success!',
+  //         text: 'Your form has been submitted successfully!',
+  //       });
+  //     }
+  //   } catch (error) {
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Oops...',
+  //       text: 'Something went wrong!',
+  //     });
+  //     console.error('Error:', error);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
+  const Progress = () => {
+    const completionPercentage = (currentStep / (steps.length - 1)) * 100;
+
+    return (
+      <>
+        <div className="w-full bg-gray-200 rounded-full h-2 relative overflow-hidden">
+          <div
+            className="absolute left-0 top-0 h-full bg-blue-500"
+            style={{ width: `${completionPercentage}%` }}
+          />
+        </div>
+      </>
+    );
+  };
 
   const FormContent = () => {
     return steps[currentStep].component;
@@ -56,6 +89,7 @@ const Progress = () => {
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
             onClick={nextStep}
+            id="next"
           >
             Next
           </button>

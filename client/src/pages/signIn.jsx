@@ -12,7 +12,8 @@ import { handleChange } from '../utils/handleChange';
 // import { AuthContext } from './../../../Context/AuthContext';
 // import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 // import jwt_decode from 'jwt-decode';
-// import axios from 'axios';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 function SignIn() {
   let [inputs, setInputs] = useState({});
@@ -45,18 +46,38 @@ function SignIn() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const { email, password } = inputs;
+    try {
+      const { email, password } = inputs;
 
-    if (!email || !password) {
-      setError({
-        isError: true,
-        type: 'missing fields',
-        message: 'All fields are required',
+      if (!email || !password) {
+        setError({
+          isError: true,
+          type: 'missing fields',
+          message: 'All fields are required',
+        });
+        resetError();
+        return;
+      }
+      const response = await axios.post('http://localhost:8000/api/login', {
+        email: email,
+        password: password,
       });
-      resetError();
-      return;
-    }
 
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Login successful!',
+        });
+        navigate('/home');
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Login failed',
+        text: error.response?.data?.message || 'Something went wrong!',
+      });
+    }
     // try {
     //   dispatch({ type: 'LOGIN_START' });
 

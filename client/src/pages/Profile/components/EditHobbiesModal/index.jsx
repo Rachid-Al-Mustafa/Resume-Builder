@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+// eslint-disable-next-line no-unused-vars
 import { useContext, useEffect, useRef, useState } from 'react';
 import { handleCloseModal } from '../../../../utils/closeModal';
 import { GrClose } from 'react-icons/gr';
@@ -6,7 +7,7 @@ import Skill from './../Skill';
 import { postRequest } from '../../../../utils/requests';
 
 const index = ({ setShowHobbiesModal, hobbies }) => {
-  const { dispatch } = useContext();
+  // const { dispatch } = useContext();
 
   const [selectedHobbies, setSelectedHobbies] = useState([]);
   const [HobbyInput, setHobbyInput] = useState('');
@@ -32,7 +33,7 @@ const index = ({ setShowHobbiesModal, hobbies }) => {
   };
 
   const handleEditSkills = async () => {
-    dispatch({ type: 'EDIT_HOBBIES', payload: selectedHobbies });
+    // dispatch({ type: 'EDIT_HOBBIES', payload: selectedHobbies });
     setShowHobbiesModal(false);
 
     await postRequest('/user/edit-profile', { hobbies: selectedHobbies });
@@ -75,7 +76,7 @@ const index = ({ setShowHobbiesModal, hobbies }) => {
           </form>
           {selectedHobbies?.length > 0 && (
             <div className="flex items-center flex-wrap gap-4 py-3.5 max-h-[300px] overflow-y-scroll overflow-x-hidden scrollbar-hide">
-              {selectedHobbies.map((skill, index) => (
+              {selectedHobbies?.map((skill, index) => (
                 <Skill
                   index={index}
                   key={index}
@@ -87,14 +88,12 @@ const index = ({ setShowHobbiesModal, hobbies }) => {
               ))}
             </div>
           )}
-          <div>
             <button
               onClick={handleEditSkills}
-              className="bg-primary text-white p-2 rounded-md mt-4 font-medium"
+              className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
             >
               Save changes
             </button>
-          </div>
         </div>
       </div>
     </div>

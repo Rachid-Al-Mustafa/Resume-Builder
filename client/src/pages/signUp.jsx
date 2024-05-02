@@ -11,6 +11,8 @@ import { postRequest } from '../utils/requests';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { handleChange } from '../utils/handleChange';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 function SignUp() {
   let [inputs, setInputs] = useState({});
@@ -63,12 +65,31 @@ function SignUp() {
       resetError();
       return;
     }
+    const response = await axios.post('http://localhost:8000/api/register', {
+      email: email,
+      password: password,
+      username: name,
+      phone,
+    });
+    if (response.status === 200) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Your form has been submitted successfully!',
+      });
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      });
+    }
 
-    const response = await postRequest(
-      '/register',
-      inputs,
-      handleRegisterError
-    );
+    // const response = await postRequest(
+    //   '/register',
+    //   inputs,
+    //   handleRegisterError
+    // );
     response && navigate('/');
   };
 
