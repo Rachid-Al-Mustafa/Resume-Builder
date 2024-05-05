@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Button from '../components/button';
 import Input from '../components/input';
 import Logo from '../assets/resumeBuilder.png';
@@ -8,17 +8,21 @@ import { MdAlternateEmail } from 'react-icons/md';
 import { FiLock } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
 import { handleChange } from '../utils/handleChange';
-// import { postRequest, setAuthToken } from '../../../utils/requests';
-// import { AuthContext } from './../../../Context/AuthContext';
+import { postRequest, setAuthToken } from '../utils/requests';
+import { AuthContext } from '../Context/AuthContext';
 // import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-// import jwt_decode from 'jwt-decode';
-import axios from 'axios';
+// import {jwt_decode} from 'jwt-decode';
+// import axios from 'axios';
 import Swal from 'sweetalert2';
 
 function SignIn() {
+  const { dispatch } = useContext(AuthContext);
+
+  localStorage.removeItem('user');
+  localStorage.removeItem('authToken');
+
   let [inputs, setInputs] = useState({});
   let [error, setError] = useState({});
-  // eslint-disable-next-line no-unused-vars
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -31,37 +35,40 @@ function SignIn() {
     }, 3000);
   };
 
-  //   const handleLoginError = (error) => {
-  //     if (error.response.data.error.status === 401) {
-  //       setError({
-  //         isError: true,
-  //         type: 'Wrong credentials',
-  //         message: 'Wrong credentials',
-  //       });
-  //       resetError();
-  //       return;
-  //     }
-  //   };
+  const handleLoginError = (error) => {
+    if (error.response.data.error.status === 401) {
+      setError({
+        isError: true,
+        type: 'Wrong credentials',
+        message: 'Wrong credentials',
+      });
+      resetError();
+      return;
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    try {
-      const { email, password } = inputs;
+    const { email, password } = inputs;
 
-      if (!email || !password) {
-        setError({
-          isError: true,
-          type: 'missing fields',
-          message: 'All fields are required',
-        });
-        resetError();
-        return;
-      }
-      const response = await axios.post('http://localhost:8000/api/login', {
-        email: email,
-        password: password,
+    if (!email || !password) {
+      setError({
+        isError: true,
+        type: 'missing fields',
+        message: 'All fields are required',
       });
+      resetError();
+      return;
+    }
+
+    try {
+      dispatch({ type: 'LOGIN_START' });
+
+      const response = await postRequest('/login', inputs, handleLoginError);
+      response && await setAuthToken(response.data.token);
+
+      dispatch({ type: 'LOGIN_SUCCESS', payload: response });
 
       if (response.status === 200) {
         Swal.fire({
@@ -69,26 +76,16 @@ function SignIn() {
           title: 'Success!',
           text: 'Login successful!',
         });
-        navigate('/home');
+        response && navigate('/home');
       }
     } catch (error) {
+      dispatch({ type: 'LOGIN_FAILURE' });
       Swal.fire({
         icon: 'error',
         title: 'Login failed',
         text: error.response?.data?.message || 'Something went wrong!',
       });
     }
-    // try {
-    //   dispatch({ type: 'LOGIN_START' });
-
-    //   const response = await postRequest('/login', inputs, handleLoginError);
-    //   response && setAuthToken(response.token);
-
-    //   dispatch({ type: 'LOGIN_SUCCESS', payload: response });
-    //   response && navigate('/home');
-    // } catch (error) {
-    //   dispatch({ type: 'LOGIN_FAILURE' });
-    // }
   };
 
   // const handleGoogleLoginSuccess = (credentialResponse) => {

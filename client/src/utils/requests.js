@@ -38,7 +38,7 @@ const makeRequest = async (
       ...config,
     });
 
-    return response.data;
+    return response;
   } catch (error) {
     if (errorHandler) {
       errorHandler(error);

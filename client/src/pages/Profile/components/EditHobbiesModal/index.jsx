@@ -1,13 +1,12 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-// eslint-disable-next-line no-unused-vars
 import { useContext, useEffect, useRef, useState } from 'react';
 import { handleCloseModal } from '../../../../utils/closeModal';
 import { GrClose } from 'react-icons/gr';
 import Skill from './../Skill';
+import { AuthContext } from '../../../../Context/AuthContext';
 import { postRequest } from '../../../../utils/requests';
 
 const index = ({ setShowHobbiesModal, hobbies }) => {
-  // const { dispatch } = useContext();
+  const { dispatch } = useContext(AuthContext);
 
   const [selectedHobbies, setSelectedHobbies] = useState([]);
   const [HobbyInput, setHobbyInput] = useState('');
@@ -33,10 +32,20 @@ const index = ({ setShowHobbiesModal, hobbies }) => {
   };
 
   const handleEditSkills = async () => {
-    // dispatch({ type: 'EDIT_HOBBIES', payload: selectedHobbies });
-    setShowHobbiesModal(false);
+    try {
+      dispatch({ type: 'EDIT_HOBBIES', payload: selectedHobbies });
 
-    await postRequest('/user/edit-profile', { hobbies: selectedHobbies });
+      const response = await postRequest('/user/edit-profile', {
+        hobbies: selectedHobbies,
+      });
+
+      if (response.status === 200) {
+        dispatch({ type: 'LOGIN_SUCCESS', payload: response });
+        setShowHobbiesModal(false);
+      }
+    } catch (error) {
+      console.error('Error updating user info:', error);
+    }
   };
 
   const closeModal = (e) => handleCloseModal(e, boxRef, setShowHobbiesModal);
@@ -88,12 +97,12 @@ const index = ({ setShowHobbiesModal, hobbies }) => {
               ))}
             </div>
           )}
-            <button
-              onClick={handleEditSkills}
-              className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
-            >
-              Save changes
-            </button>
+          <button
+            onClick={handleEditSkills}
+            className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
+          >
+            Save changes
+          </button>
         </div>
       </div>
     </div>

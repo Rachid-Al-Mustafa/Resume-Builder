@@ -19,8 +19,8 @@ function SignUp() {
   let [error, setError] = useState({ isError: false, type: '', message: '' });
   const navigate = useNavigate();
 
-  // localStorage.removeItem('user');
-  // localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+  localStorage.removeItem('authToken');
 
   const handleInputChange = (e) => {
     handleChange(e, setInputs);
@@ -33,11 +33,11 @@ function SignUp() {
   };
 
   const handleRegisterError = (error) => {
-    const errorMessage = error.response.data.error.message;
+    const errorMessage = error?.response?.data?.error?.message;
     if (errorMessage === 'User already exists! Login Instead') {
       setError({ isError: true, type: 'email', message: errorMessage });
       resetError();
-    } else if (errorMessage === 'Invalid username!') {
+    } else if (errorMessage === 'Invalid Phone Number!') {
       setError({ isError: true, type: 'username', message: errorMessage });
       resetError();
     }
@@ -65,32 +65,29 @@ function SignUp() {
       resetError();
       return;
     }
-    const response = await axios.post('http://localhost:8000/api/register', {
-      email: email,
-      password: password,
-      username: name,
-      phone,
-    });
-    if (response.status === 200) {
+
+    const response = await postRequest(
+      '/register',
+      inputs,
+      handleRegisterError
+    );
+
+    console.log(response);
+
+    if (response.status === 201) {
       Swal.fire({
         icon: 'success',
         title: 'Success!',
         text: 'Your form has been submitted successfully!',
       });
+      navigate('/');
     } else {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Something went wrong!',
+        text: response.data.error.message,
       });
     }
-
-    // const response = await postRequest(
-    //   '/register',
-    //   inputs,
-    //   handleRegisterError
-    // );
-    response && navigate('/');
   };
 
   return (

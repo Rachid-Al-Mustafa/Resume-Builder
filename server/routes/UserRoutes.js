@@ -1,17 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { EditProfile, UserData, SearchUsers, SearchUsersCommunities, GetFriends, GetSuggestedUsers } = require("../controllers/UserController");
-
-router.post("/suggested-users", GetSuggestedUsers);
+const { EditProfile } = require("../controllers/UserController");
+// const { EditProfile, UserData } = require('../controllers/UserController');
 
 router.post("/edit-profile", EditProfile);
 
-router.get("/friends/:communityId", GetFriends)
-
-router.get("/:username", UserData)
-
-router.get("/search/:searchTerm", SearchUsersCommunities)
-
-router.get("/search/:searchTerm/:communityId", SearchUsers)
+// router.get("/:username", UserData)
 
 module.exports = router;

@@ -1,16 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema( 
+const userSchema = new Schema(
   {
     name: {
       type: String,
       required: [true, 'Name is required'],
-    },
-    username: {
-      type: String,
-      required: [true, 'Name is required'],
-      unique: [true, 'Username has already been taken'],
     },
     email: {
       type: String,
@@ -63,6 +58,10 @@ const userSchema = new Schema(
         },
       ],
       hobbies: [String],
+    },
+    verified: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

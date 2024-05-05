@@ -1,48 +1,60 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { GrClose } from 'react-icons/gr';
 import Input from '../../../../components/input';
 import { handleCloseModal } from '../../../../utils/closeModal';
-// eslint-disable-next-line no-unused-vars
 import { useContext, useEffect, useRef, useState } from 'react';
 import { handleChange } from '../../../../utils/handleChange';
-// import { postRequest } from '../../../../utils/requests';
+import { postRequest } from '../../../../utils/requests';
+import { AuthContext } from '../../../../Context/AuthContext';
+import axios from 'axios';
 // import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 const index = ({ setShowEditUserModal }) => {
-  // const { user, dispatch } = useContext();
-  const { name } = { name: 'Raed Al Mustafa' };
-  const { location, bio } = {
-    location: '',
-    bio: '',
-  };
-  // eslint-disable-next-line no-unused-vars
-  const [value, setValue] = useState(null);
+  const { user, dispatch } = useContext(AuthContext);
+  const { data: userData } = user;
 
-  let [inputs, setInputs] = useState({
-    name: name || '',
-    location: location || '',
-    bio: bio || '',
+  const [inputs, setInputs] = useState({
+    name: userData.name || '',
+    phone: userData.phone || '',
+    location: userData.profile.location || '',
+    bio: userData.profile.bio || '',
   });
+
   const boxRef = useRef();
 
   const handleInputChange = (e) => {
-    handleChange(e, setInputs);
+    const { name, value } = e.target;
+    setInputs((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleEditUserInfo = async () => {
-    // dispatch({ type: 'EDIT_USER_INFO', payload: inputs });
-    setShowEditUserModal(false);
+  const handleEditUserInfo = async (e) => {
+    e.preventDefault();
 
-    // await postRequest('/user/edit-profile', inputs);
+    const updatedUserData = {
+      ...userData,
+      name: inputs.name,
+      phone: inputs.phone,
+      profile: {
+        ...userData.profile,
+        location: inputs.location,
+        bio: inputs.bio,
+      },
+    };
+
+    try {
+      dispatch({ type: 'EDIT_USER_INFO', payload: updatedUserData });
+
+      const response = await postRequest('/user/edit-profile', updatedUserData);
+
+      if (response.status === 200) {
+        dispatch({ type: 'LOGIN_SUCCESS', payload: response });
+        setShowEditUserModal(false);
+      }
+    } catch (error) {
+      console.error('Error updating user info:', error);
+    }
   };
 
   const closeModal = (e) => handleCloseModal(e, boxRef, setShowEditUserModal);
-
-  console.log(value, 'vaaalueee');
-
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
 
   return (
     <div
@@ -78,6 +90,13 @@ const index = ({ setShowEditUserModal }) => {
             name="location"
             placeholder="Your Location"
             value={inputs.location}
+            handleChange={handleInputChange}
+          />
+          <Input
+            label="Phone"
+            name="phone"
+            placeholder="Your Phone Number"
+            value={inputs.phone}
             handleChange={handleInputChange}
           />
           {/* <GooglePlacesAutocomplete

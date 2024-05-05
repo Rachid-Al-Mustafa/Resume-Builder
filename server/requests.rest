@@ -3,10 +3,10 @@ POST http://localhost:3000/api/register
 Content-Type : application/json
 
 {
-    "name" : "userTwo",
-    "username" : "userTwo",
-    "email" : "userTwo@gmail.com",
-    "password" : "userTwo"
+    "name" : "Rachid Al Mustafa",
+    "password" : "rachid12345",
+    "email" : "test@gmail.com",
+    "phone" : "+96171927717"
 }
 
 ###

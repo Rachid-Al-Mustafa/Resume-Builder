@@ -1,20 +1,16 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { HiPencil } from 'react-icons/hi';
-// eslint-disable-next-line no-unused-vars
 import { getRequest, postRequest } from '../../utils/requests';
-// import {AuthContext} from "../../Context/AuthContext";
+import { AuthContext } from '../../Context/AuthContext';
 import { imageDB } from '../../utils/FirebaseConfig';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid';
 import ProfilePicture from '../../assets/hero.png';
 import { FaLocationDot } from 'react-icons/fa6';
-import { GoCommentDiscussion } from 'react-icons/go';
+import { FaPhoneAlt } from 'react-icons/fa';
 
 const index = ({ setShowEditUserModal, user, isCurrentUser }) => {
-  var dispatch;
-  // eslint-disable-next-line no-unused-vars
-  var currentUser = {};
+  const { dispatch } = useContext(AuthContext);
 
   const [profileImg, setProfileImg] = useState();
   const [coverImg, setCoverImg] = useState();
@@ -26,7 +22,6 @@ const index = ({ setShowEditUserModal, user, isCurrentUser }) => {
 
   const handleInput = (e, image) => {
     if (e.target.files.length > 0) {
-      // eslint-disable-next-line no-inner-declarations
       function getBase64(file) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -56,9 +51,7 @@ const index = ({ setShowEditUserModal, user, isCurrentUser }) => {
       });
 
       const reader = new FileReader();
-      reader.onloadend = () => {
-        // console.log(reader.result);
-      };
+      reader.onloadend = () => {};
       reader.readAsDataURL(e.target.files[0]);
     }
   };
@@ -105,7 +98,7 @@ const index = ({ setShowEditUserModal, user, isCurrentUser }) => {
           className={`absolute w-[160px] h-[160px] rounded-full object-cover -bottom-[25%] left-[5%] border-[5px] border-white ${
             isCurrentUser && 'cursor-pointer'
           }`}
-          src={user?.profile?.profileImage || ProfilePicture}
+          src={user?.data?.profile?.profileImage || ProfilePicture}
           alt="profile-picture"
         />
         <input
@@ -148,16 +141,18 @@ const index = ({ setShowEditUserModal, user, isCurrentUser }) => {
           />
         </div>
         <div className="mt-8 flex flex-col items-start gap-1.5">
-          <div className="text-xl font-semibold text-primary">
-            Raed Al Mustafa
-          </div>
-          <div className="flex items-center gap-1.5">
-            {' '}
-            <FaLocationDot /> Lebanon
-          </div>
-          <div className="flex items-center gap-1.5">
-            <GoCommentDiscussion /> The Best At My Job!
-          </div>
+          <div className="text-xl font-semibold text-primary">{user.name}</div>
+          {user.profile.location && (
+            <div className="flex items-center gap-1.5">
+              {' '}
+              <FaLocationDot /> {user.profile.location}
+            </div>
+          )}
+          {user.profile.bio && (
+            <div className="flex items-center gap-1.5">
+              <FaPhoneAlt /> {user.phone}
+            </div>
+          )}
         </div>
       </div>
     </div>

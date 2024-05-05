@@ -55,7 +55,7 @@ const index = ({
             .map((skill, index) => (
               <div key={index}>
                 <div className="relative flex items-center gap-2 py-2 px-4 rounded-md border-2">
-                  {skill}
+                  {skill.name}
                   {remove && (
                     <div
                       onClick={() => handleRemoveSkill(index)}

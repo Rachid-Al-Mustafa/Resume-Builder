@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
+import { AuthContext } from './Context/AuthContext';
+import ProtectedRoutes from './utils/ProtectedRoutes';
 import SignIn from './pages/signIn';
 import SignUp from './pages/signUp';
 import NotFound from './pages/notFound';
@@ -12,6 +14,7 @@ import Templates from './pages/template';
 import Profile from './pages/Profile/index';
 
 function App() {
+
   const protectedRoutes = [
     {
       path: '/home',
@@ -26,13 +29,9 @@ function App() {
       element: <Templates />,
     },
     {
-      path: '/profile',
+      path: `/profile`,
       element: <Profile />,
     },
-    // {
-    //   path: '/notifications',
-    //   element: <SmNotifications />,
-    // },
   ];
 
   const publicRoutes = [
@@ -64,11 +63,11 @@ function App() {
         {publicRoutes.map((route, index) => (
           <Route key={index} path={route.path} element={route.element} />
         ))}
-        {/* <Route element={<ProtectedRoutes />}> */}
-            {protectedRoutes.map((route, index) => (
-              <Route key={index} path={route.path} element={route.element} />
-            ))}
-          {/* </Route> */}
+        <Route element={<ProtectedRoutes />}>
+          {protectedRoutes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+        </Route>
       </Routes>
     </React.StrictMode>
   );
