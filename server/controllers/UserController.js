@@ -1,4 +1,5 @@
-const User = require('./../models/User');
+const Education = require('../models/Education');
+const User = require('../models/User');
 
 const EditProfile = async (req, res) => {
   if (Object.keys(req.body).length === 0) {
@@ -27,7 +28,7 @@ const EditProfile = async (req, res) => {
       {
         $set: updatedFields,
       },
-      { new: true }
+      { new: true, lean: true }
     );
 
     if (!user) return res.status(404).json({ message: 'User not found' });

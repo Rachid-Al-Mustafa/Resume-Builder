@@ -1,23 +1,42 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { GrClose } from 'react-icons/gr';
 import { handleCloseModal } from '../../../../utils/closeModal';
-// eslint-disable-next-line no-unused-vars
 import { useContext, useEffect, useRef, useState } from 'react';
 import { languagesData } from './../../../../utils/LanguagesData';
 import Language from './../Language';
 import { postRequest } from '../../../../utils/requests';
+import { AuthContext } from '../../../../Context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const index = ({ setShowLanguagesModal, languages }) => {
-  // const { dispatch } = useContext();
+  const { user, dispatch } = useContext(AuthContext);
+  const { data: userData } = user;
+  const navigate = useNavigate();
+
+  const Levels = ['Beginner', 'Basic', 'Good', 'Advance', 'Expert'];
 
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   let [showLanguagesList, setShowLanguagesList] = useState(false);
   const boxRef = useRef();
+  const [selectedLangauge, setSelectedLangauge] = useState('');
+  const [selectedLevel, setSelectedLevel] = useState('');
+  const [languageID, setLanguageID] = useState([...languages]);
+  const [languageData, setLanguageData] = useState(selectedLanguages);
 
   useEffect(() => {
-    setSelectedLanguages(languages ?? []);
-  }, [languages]);
+    const fetchSkills = async () => {
+      try {
+        const response = await postRequest('/skill/getSkills', languages);
+        if (response.status === 200) {
+          await setSkillsData(response.data.languages);
+        }
+      } catch (error) {
+        console.error('Error fetching skills:', error);
+      }
+    };
+
+    fetchSkills();
+  }, [selectedSkills, skillInput]);
 
   const handleLanguageChange = (e) => {
     const language = e.target.value;
@@ -35,6 +54,63 @@ const index = ({ setShowLanguagesModal, languages }) => {
     setShowLanguagesModal(false);
 
     await postRequest('/user/edit-profile', { languages: selectedLanguages });
+  };
+
+  const handleRemoveLanguage = async (e, Index) => {
+    e.preventDefault();
+    setSelectedLanguages((prev) => {
+      if (Index >= 0 && Index < prev.length) {
+        return prev.filter((_, i) => i !== Index);
+      }
+      return prev;
+    });
+  };
+
+  const handleAddLanguage = async (e) => {
+    e.preventDefault();
+
+    if (selectedLangauge.trim() !== '' && selectedLangauge.trim() !== '') {
+      const newLanguage = {
+        name: selectedLangauge.trim(),
+        level: selectedLevel.trim(),
+      };
+      const response = await postRequest('/skill/create', newLanguage);
+      if (response.status === 200) {
+        console.log(response.data.skill._id);
+        const newLanguageID = [response.data.skill._id, ...skillID];
+        await setLanguageID(newLanguageID);
+        await setSelectedSkills([newLanguage, ...selectedLanguages]);
+        setSelectedLangauge('');
+        setSelectedLevel('Beginner');
+      }
+    }
+  };
+
+  const handleEditSkills = async (e) => {
+    e.preventDefault();
+    const updatedUserData = {
+      ...userData,
+      profile: {
+        ...userData.profile,
+        languages: languageID,
+      },
+    };
+
+    try {
+      dispatch({
+        type: 'EDIT_LANGUAGES',
+        payload: updatedUserData.profile.languages,
+      });
+
+      const response = await postRequest('/user/edit-profile', updatedUserData);
+      if (response.status === 200) {
+        dispatch({ type: 'LOGIN_SUCCESS', payload: response });
+        setShowLanguagesModal(false);
+        navigate(0);
+      }
+    } catch (error) {
+      console.error('Error updating user info:', error);
+    }
   };
 
   const closeModal = (e) => handleCloseModal(e, boxRef, setShowLanguagesModal);

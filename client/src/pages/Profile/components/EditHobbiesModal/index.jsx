@@ -4,9 +4,12 @@ import { GrClose } from 'react-icons/gr';
 import Skill from './../Skill';
 import { AuthContext } from '../../../../Context/AuthContext';
 import { postRequest } from '../../../../utils/requests';
+import { useNavigate } from 'react-router-dom';
 
 const index = ({ setShowHobbiesModal, hobbies }) => {
-  const { dispatch } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
+  const { data: userData } = user;
+  const navigate = useNavigate();
 
   const [selectedHobbies, setSelectedHobbies] = useState([]);
   const [HobbyInput, setHobbyInput] = useState('');
@@ -16,32 +19,45 @@ const index = ({ setShowHobbiesModal, hobbies }) => {
     setSelectedHobbies(hobbies);
   }, [hobbies]);
 
-  const handleRemoveHobby = (removedIndex) => {
+  const handleRemoveHobby = (e, Index) => {
+    e.preventDefault();
+
     setSelectedHobbies((prev) =>
-      prev.filter((skill, index) => index !== removedIndex)
+      prev.filter((skill, index) => index !== Index)
     );
   };
 
   const handleAddSkill = (e) => {
     e.preventDefault();
 
-    if (HobbyInput !== '') {
-      setSelectedHobbies([HobbyInput, ...selectedHobbies]);
+    if (HobbyInput.trim() !== '') {
+      setSelectedHobbies([HobbyInput.trim(), ...selectedHobbies]);
       setHobbyInput('');
     }
   };
 
-  const handleEditSkills = async () => {
-    try {
-      dispatch({ type: 'EDIT_HOBBIES', payload: selectedHobbies });
-
-      const response = await postRequest('/user/edit-profile', {
+  const handleEditSkills = async (e) => {
+    e.preventDefault();
+    const updatedUserData = {
+      ...userData,
+      profile: {
+        ...userData.profile,
         hobbies: selectedHobbies,
+      },
+    };
+
+    try {
+      dispatch({
+        type: 'EDIT_HOBBIES',
+        payload: updatedUserData.profile.hobbies,
       });
+
+      const response = await postRequest('/user/edit-profile', updatedUserData);
 
       if (response.status === 200) {
         dispatch({ type: 'LOGIN_SUCCESS', payload: response });
         setShowHobbiesModal(false);
+        navigate(0);
       }
     } catch (error) {
       console.error('Error updating user info:', error);
@@ -78,7 +94,7 @@ const index = ({ setShowHobbiesModal, hobbies }) => {
             <input
               className="placeholder:text-gray-500 font-medium flex-1 outline-none bg-transparent"
               type="text"
-              placeholder="Add skills"
+              placeholder="Add Hobbies"
               value={HobbyInput}
               onChange={(e) => setHobbyInput(e.target.value)}
             />
@@ -86,20 +102,25 @@ const index = ({ setShowHobbiesModal, hobbies }) => {
           {selectedHobbies?.length > 0 && (
             <div className="flex items-center flex-wrap gap-4 py-3.5 max-h-[300px] overflow-y-scroll overflow-x-hidden scrollbar-hide">
               {selectedHobbies?.map((skill, index) => (
-                <Skill
+                <div
                   index={index}
                   key={index}
-                  inModal={true}
-                  skill={skill}
-                  remove={true}
-                  handleRemoveSkill={handleRemoveHobby}
-                />
+                  onClick={(e) => handleRemoveHobby(e, index)}
+                >
+                  <Skill skill={skill} remove={true} />
+                </div>
               ))}
             </div>
           )}
           <button
-            onClick={handleEditSkills}
+            onClick={handleAddSkill}
             className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
+          >
+            Add Hobby
+          </button>
+          <button
+            onClick={(e) => handleEditSkills(e)}
+            className="bg-blue-500 text-white p-2 rounded-md mt-4 font-medium"
           >
             Save changes
           </button>

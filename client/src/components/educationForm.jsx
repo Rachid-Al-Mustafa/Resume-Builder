@@ -3,51 +3,40 @@ import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
-const EducationForm = ({ nextStep }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false); // State variable to track submission status
-
-  const [parentElementShown, setParentElementShown] = useState(false);
-  useEffect(() => {
-    const element = document.getElementById('next');
-    if (element) {
-      element.remove();
-      setParentElementShown(true);
-    }
-  }, []);
-
-  const handleSubmit = async (e) => {
-    // e.preventDefault();
-    if (isSubmitting) return; // Prevent multiple submissions
-    setIsSubmitting(true); // Set submission status to true
-    try {
-      const response = await axios.post(
-        'http://localhost:8000/api/create-education',
-        {
-          educationLevel,
-          profession,
-          yearsOfExperience,
-          graduationYear,
-        }
-      );
-      console.log('Sa', response);
-      if (response.status === 200) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Education created fuckly!',
-        });
-        nextStep();
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Login failed',
-        text: error.response?.data?.message || 'Something went wrong!',
-      });
-    } finally {
-      setIsSubmitting(false); // Reset submission status
-    }
-  };
+const EducationForm = () => {
+  // const handleSubmit = async (e) => {
+  //   // e.preventDefault();
+  //   if (isSubmitting) return; // Prevent multiple submissions
+  //   setIsSubmitting(true); // Set submission status to true
+  //   try {
+  //     const response = await axios.post(
+  //       'http://localhost:8000/api/create-education',
+  //       {
+  //         educationLevel,
+  //         profession,
+  //         yearsOfExperience,
+  //         graduationYear,
+  //       }
+  //     );
+  //     console.log('Sa', response);
+  //     if (response.status === 200) {
+  //       Swal.fire({
+  //         icon: 'success',
+  //         title: 'Success!',
+  //         text: 'Education created fuckly!',
+  //       });
+  //       nextStep();
+  //     }
+  //   } catch (error) {
+  //     Swal.fire({
+  //       icon: 'error',
+  //       title: 'Login failed',
+  //       text: error.response?.data?.message || 'Something went wrong!',
+  //     });
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
   const [educationLevel, setEducationLevel] = useState('');
   const [profession, setProfession] = useState('');
   const [yearsOfExperience, setYearsOfExperience] = useState('');
@@ -83,7 +72,6 @@ const EducationForm = ({ nextStep }) => {
     } else {
       setProfession('');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [educationLevel]);
 
   return (
@@ -174,16 +162,6 @@ const EducationForm = ({ nextStep }) => {
         </div>
       </div>
       {doubleMajor && <EducationForm />}
-      {parentElementShown && (
-        <button
-          onClick={(e) => {
-            handleSubmit();
-          }}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-        >
-          Next
-        </button>
-      )}
     </>
   );
 };

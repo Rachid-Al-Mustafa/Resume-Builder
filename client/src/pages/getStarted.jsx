@@ -7,6 +7,7 @@ import PersonalInfoForm from '../components/personalInfoForm';
 import SkillsForm from '../components/skills';
 
 function GetStarted() {
+  const [currentStep, setCurrentStep] = useState(0);
   const nextStep = () => {
     setCurrentStep(currentStep + 1);
   };
@@ -17,43 +18,11 @@ function GetStarted() {
   const steps = [
     {
       name: 'Personal Info',
-      component: <PersonalInfoForm nextStep={nextStep} />,
+      component: <PersonalInfoForm />,
     },
-    { name: 'Education', component: <EducationForm nextStep={nextStep} /> },
+    { name: 'Education', component: <EducationForm /> },
     { name: 'Contact', component: <SkillsForm /> },
   ];
-
-  const [currentStep, setCurrentStep] = useState(0); 
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (isSubmitting) return;
-  //   setIsSubmitting(true);
-  //   try {
-  //     const response = await axios.post(
-  //       'http://localhost:8000/api/create',
-  //       formData
-  //     );
-  //     if (response.status === 200) {
-  //       Swal.fire({
-  //         icon: 'success',
-  //         title: 'Success!',
-  //         text: 'Your form has been submitted successfully!',
-  //       });
-  //     }
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: 'error',
-  //       title: 'Oops...',
-  //       text: 'Something went wrong!',
-  //     });
-  //     console.error('Error:', error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
 
   const Progress = () => {
     const completionPercentage = (currentStep / (steps.length - 1)) * 100;

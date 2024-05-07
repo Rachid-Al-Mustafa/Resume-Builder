@@ -4,6 +4,7 @@ import EducationalInfo from '../../components/EducationalInfo';
 import UserDataSection from '../../components/UserDataSection';
 import About from '../../components/About';
 import SkillsLanguagesSection from '../../components/SkillsLanguagesSection';
+import HobbiesSection from '../../components/HobbiesSection';
 import { useEffect, useState, useContext } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import EditHobbiesModal from './components/EditHobbiesModal';
@@ -26,7 +27,7 @@ const index = () => {
   const [showHobbiesModal, setShowHobbiesModal] = useState(false);
   const [showSkillsModal, setShowSkillsModal] = useState(false);
 
-  let { skills, languages, bio, university, hobbies } = user.data.profile;
+  const { skills, languages, bio, university, hobbies } = user.data.profile;
   let University;
   let Major;
   if (university.highLevel) {
@@ -68,7 +69,6 @@ const index = () => {
               setShowModal={setShowSkillsModal}
               text="Skills"
               data={Skills}
-              handleRemoveSkill={handleRemoveSkill}
               maxDataToShow={10}
               currentUser={user?.data.name === name}
               emptyHeadline="Your skills will shine here."
@@ -77,16 +77,14 @@ const index = () => {
               setShowModal={setShowLanguagesModal}
               text="Languages"
               data={Languages}
-              handleRemoveSkill={handleRemoveSkill}
               maxDataToShow={10}
               currentUser={user?.data.name === name}
               emptyHeadline="Your multilingual talengts await."
             />
-            <SkillsLanguagesSection
+            <HobbiesSection
               setShowModal={setShowHobbiesModal}
               text="Hobbies"
               data={Hobbies}
-              handleRemoveSkill={handleRemoveSkill}
               maxDataToShow={10}
               currentUser={user?.data.name === name}
               emptyHeadline="Looks like hobbies are still on vacation here."

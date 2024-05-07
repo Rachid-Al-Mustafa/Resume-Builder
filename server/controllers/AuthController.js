@@ -1,4 +1,5 @@
-const User = require('./../models/User');
+const Education = require('../models/Education');
+const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -66,7 +67,7 @@ const Login = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) return next(createError(401, 'Wrong credentials'));
-
+    
     await user.save();
 
     const validPassword = await bcrypt.compare(password, user.password);

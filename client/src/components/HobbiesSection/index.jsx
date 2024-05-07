@@ -1,4 +1,5 @@
-import { useEffect, useState, useContext } from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState } from 'react';
 import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { HiPencil } from 'react-icons/hi';
 import Button from '../ShowCommunites/UI/Button';
@@ -6,8 +7,6 @@ import Button from '../ShowCommunites/UI/Button';
 import { GrClose } from 'react-icons/gr';
 import { IoAddCircleSharp } from 'react-icons/io5';
 import { IoCloseCircleSharp } from 'react-icons/io5';
-import { postRequest } from '../../utils/requests';
-import { AuthContext } from '../../Context/AuthContext';
 
 const index = ({
   data,
@@ -18,23 +17,10 @@ const index = ({
   currentUser,
 }) => {
   const [showAllData, setShowAllData] = useState(false);
-  const [remove, setRemove] = useState(false);
-  const { user, dispatch } = useContext(AuthContext);
-  const [skillsData, setSkillsData] = useState(data);
+  const [hobbies, setHobbies] = useState(data);
 
   useEffect(() => {
-    const fetchSkills = async () => {
-      try {
-        const response = await postRequest('/skill/getSkills', data);
-        if (response.status === 200) {
-          await setSkillsData(response.data.skills);
-        }
-      } catch (error) {
-        console.error('Error fetching skills:', error);
-      }
-    };
-
-    fetchSkills();
+    setHobbies(data);
   }, [data]);
 
   return (
@@ -50,26 +36,13 @@ const index = ({
         )}
       </div>
       <div className="flex items-center flex-wrap gap-4 py-3.5 overflow-x-hidden">
-        {skillsData?.length > 0 ? (
-          skillsData
-            .slice(0, showAllData ? skillsData?.length : maxDataToShow)
+        {hobbies?.length > 0 ? (
+          data
+            .slice(0, showAllData ? hobbies?.length : maxDataToShow)
             .map((skill, index) => (
-              <div
-                className={
-                  skill.level === 'Beginner'
-                    ? 'bg-red-400'
-                    : skill.level === 'Basic'
-                    ? 'bg-orange-400'
-                    : skill.level === 'Good'
-                    ? 'bg-gray-400'
-                    : skill.level === 'Advance'
-                    ? 'bg-green-400'
-                    : 'bg-blue-400'
-                }
-                key={index}
-              >
+              <div key={index}>
                 <div className="relative flex items-center gap-2 py-2 px-4 rounded-md border-2">
-                  {skill.name}
+                  {skill}
                 </div>
               </div>
             ))
@@ -77,7 +50,7 @@ const index = ({
           <h1 className="my-2 text-lg">{emptyHeadline}</h1>
         )}
       </div>
-      {skillsData?.length > maxDataToShow && (
+      {hobbies?.length > maxDataToShow && (
         <div>
           {showAllData ? (
             <Button
