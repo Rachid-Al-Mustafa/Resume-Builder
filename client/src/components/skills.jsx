@@ -67,7 +67,7 @@ const SkillLanguageProjectForm = () => {
   return (
     <div className="flex flex-col container mx-auto items-start">
       <h1 className="text-2xl font-bold mt-8 mb-4">
-        Add Skills, Languages, and Projects/Experience
+        Add Skills, Languages, and Experience
       </h1>
 
       {/* Skills */}

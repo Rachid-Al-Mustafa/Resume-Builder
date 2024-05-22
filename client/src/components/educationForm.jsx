@@ -1,78 +1,103 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import axios from 'axios';
+import Input from './input';
+import { handleChange } from '../utils/handleChange';
 
-const EducationForm = () => {
-  // const handleSubmit = async (e) => {
-  //   // e.preventDefault();
-  //   if (isSubmitting) return; // Prevent multiple submissions
-  //   setIsSubmitting(true); // Set submission status to true
-  //   try {
-  //     const response = await axios.post(
-  //       'http://localhost:8000/api/create-education',
-  //       {
-  //         educationLevel,
-  //         profession,
-  //         yearsOfExperience,
-  //         graduationYear,
-  //       }
-  //     );
-  //     console.log('Sa', response);
-  //     if (response.status === 200) {
-  //       Swal.fire({
-  //         icon: 'success',
-  //         title: 'Success!',
-  //         text: 'Education created fuckly!',
-  //       });
-  //       nextStep();
-  //     }
-  //   } catch (error) {
-  //     Swal.fire({
-  //       icon: 'error',
-  //       title: 'Login failed',
-  //       text: error.response?.data?.message || 'Something went wrong!',
-  //     });
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-  const [educationLevel, setEducationLevel] = useState('');
-  const [profession, setProfession] = useState('');
-  const [yearsOfExperience, setYearsOfExperience] = useState('');
-  const [graduationYear, setGraduationYear] = useState('');
-  const [isStudent, setIsStudent] = useState(false);
-  const [doubleMajor, setDoubleMajor] = useState(false);
-
+const EducationForm = ({ handleInputChange }) => {
   const educationOptions = [
     { id: 1, name: "Bachelor's Degree" },
     { id: 2, name: "Master's Degree" },
     { id: 3, name: 'PhD' },
-    { id: 4, name: 'Other' },
   ];
 
-  const professions = {
-    "Bachelor's Degree": [
-      'Engineering',
-      'Business Administration',
-      'Arts',
-      'Science',
-    ],
-    "Master's Degree": ['MBA', 'MS Engineering', 'MFA', 'MS Science'],
-    PhD: ['PhD Engineering', 'PhD Literature', 'PhD Science', 'PhD Psychology'],
+  const [isStudent, setIsStudent] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const [doubleMajor, setDoubleMajor] = useState(false);
+  const [isNewEducationAdded, setIsNewEducationAdded] = useState(false);
+  const [Data, setData] = useState({
+    level: '',
+    highLevel: true,
+    graduated: !isStudent,
+    university: '',
+    major: '',
+    startDate: '',
+    endDate: '',
+    graduationDate: '',
+  });
+
+  const [educationLevel, setEducationLevel] = useState('');
+
+  const [inputs, setInputs] = useState([]);
+  const [arrayIndex, setArrayIndex] = useState(0);
+  const [universityID, setUniversityID] = useState([]);
+
+  const handleSaveData = async (e) => {
+    e.preventDefault();
+
+    await setInputs(inputs.push(Data));
+    console.log(inputs);
+   };
+
+  // useEffect(() => {
+  //   const handleSaveEducation = () => {
+  //     handleInputChange({ university: universityID });
+  //   };
+  //   handleSaveEducation();
+  // }, [universityID, handleInputChange]);
+
+  const handleInputsChange = (e) => {
+    e.preventDefault();
+    if (e.target.name === 'level') {
+      setEducationLevel(e.target.value);
+    }
+    const { name, value } = e.target;
+    const newData = {
+      ...Data,
+      [name]: value
+    }
+    setData(newData);
   };
 
+  // const handleEditEducationalInfo = async (e) => {
+  //   e.preventDefault();
+  //   dispatch({ type: 'EDIT_EDUCATIONAL_INFO', payload: inputs[arrayIndex] });
+
+  //   const response = await postRequest(
+  //     '/education/createEducation',
+  //     inputs[arrayIndex]
+  //   );
+  //   const newUniversities = [...universityID, response.data._id];
+  //   console.log(newUniversities);
+  //   await setUniversityID(newUniversities);
+  // };
+
+ const handleNewEducation = async (e) => {
+   e.preventDefault();
+
+   console.log(inputs);
+
+   const newEducation = {
+     level: educationOptions[0].name,
+     highLevel: true,
+     graduated: !isStudent,
+     university: '',
+     major: '',
+     startDate: '',
+     endDate: '',
+     graduationDate: '',
+   };
+
+   setData(newEducation);
+   setIsNewEducationAdded(true);
+   setDoubleMajor(!doubleMajor);
+  };
+  
   useEffect(() => {
-    if (educationLevel && educationLevel !== 'Other') {
-      if (professions[educationLevel]) {
-        setProfession(professions[educationLevel][0]);
-      } else {
-        setProfession('');
-      }
-    } else {
-      setProfession('');
+    if (isNewEducationAdded) {
+      setArrayIndex(inputs.length);
+      setIsNewEducationAdded(false);
     }
-  }, [educationLevel]);
+  }, [inputs, isNewEducationAdded]);
 
   return (
     <>
@@ -83,7 +108,8 @@ const EducationForm = () => {
         <select
           className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           value={educationLevel}
-          onChange={(e) => setEducationLevel(e.target.value)}
+          name="level"
+          onChange={handleInputsChange}
         >
           <option value="">Select Education Level</option>
           {educationOptions.map((option) => (
@@ -93,73 +119,103 @@ const EducationForm = () => {
           ))}
         </select>
 
-        {educationLevel !== 'Other' && educationLevel !== '' && (
-          <>
-            <label className="text-gray-700 text-sm font-bold mt-2">
-              Profession
-            </label>
-            <select
-              className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={profession}
-              onChange={(e) => setProfession(e.target.value)}
-            >
-              {professions[educationLevel]?.map((prof) => (
-                <option key={prof} value={prof}>
-                  {prof}
-                </option>
-              ))}
-            </select>
-            <div className="flex items-center mt-2">
-              <input
-                type="checkbox"
-                id="isStudent"
-                checked={isStudent}
-                onChange={() => setIsStudent(!isStudent)}
-                className="mr-2"
-              />
-              <label htmlFor="isStudent" className="text-gray-700">
-                Still Learning
-              </label>
-            </div>
-          </>
-        )}
-
-        {educationLevel === 'Other' && (
-          <input
-            className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-            placeholder="Enter your field"
-            value={profession}
-            onChange={(e) => setProfession(e.target.value)}
-          />
-        )}
-
         <label className="text-gray-700 text-sm font-bold mt-2">
-          {isStudent ? 'Expected Graduation Year' : 'Years of Experience'}
+          University
         </label>
-        <input
-          className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text"
-          placeholder={isStudent ? 'E.g.: 2024' : 'E.g.: 5'}
-          value={isStudent ? graduationYear : yearsOfExperience}
-          onChange={(e) =>
-            isStudent
-              ? setGraduationYear(e.target.value)
-              : setYearsOfExperience(e.target.value)
-          }
+        <Input
+          label="University"
+          placeholder="Your University"
+          name="university"
+          value={Data?.university}
+          handleChange={handleInputsChange}
+        />
+
+        <label className="text-gray-700 text-sm font-bold mt-2">Major</label>
+        <Input
+          label="Major"
+          placeholder="Your Major"
+          name="major"
+          value={Data?.major}
+          handleChange={handleInputsChange}
         />
         <div className="flex items-center mt-2">
           <input
             type="checkbox"
-            id="isDoubleMajor"
-            checked={doubleMajor}
-            onChange={() => setDoubleMajor(!doubleMajor)}
+            id="isStudent"
+            name="graduated"
+            checked={isStudent}
+            value={isStudent}
+            onChange={(e) => {
+              setIsStudent(!isStudent);
+              handleInputsChange(e);
+            }}
             className="mr-2"
           />
           <label htmlFor="isStudent" className="text-gray-700">
-            Add Another Major
+            Still Learning
           </label>
         </div>
+
+        <label className="text-gray-700 text-sm font-bold mt-2">
+          {isStudent ? 'Expected Graduation Year' : 'Graduation Year'}
+        </label>
+        {isStudent ? (
+          <Input
+            label="Expected Graduation Date"
+            type="date"
+            name="graduationDate"
+            value={Data?.graduationDate}
+            handleChange={handleInputsChange}
+          />
+        ) : (
+          <>
+            <label className="text-gray-700 text-sm font-bold mt-2">From</label>
+            <Input
+              label="Start Date"
+              type="date"
+              name="startDate"
+              value={Data?.startDate}
+              handleChange={handleInputsChange}
+            />
+            <label className="text-gray-700 text-sm font-bold mt-2">To</label>
+            <Input
+              label="End Date"
+              type="date"
+              name="endDate"
+              value={Data?.endDate}
+              handleChange={handleInputsChange}
+            />
+          </>
+        )}
+        <div className="flex items-center mt-2">
+          <input
+            type="checkbox"
+            id="isDone"
+            checked={completed}
+            onChange={(e) => {
+              setCompleted(!completed);
+              handleSaveData(e);
+            }}
+            className="mr-2"
+          />
+          <label htmlFor="isDone" className="text-gray-700">
+            I have Completed the above education.
+          </label>
+        </div>
+        {completed && (
+          <div className="flex items-center mt-2">
+            <input
+              type="checkbox"
+              id="isDoubleMajor"
+              checked={doubleMajor}
+              onChange={(e) => handleNewEducation(e)}
+              className="mr-2"
+            />
+            <label htmlFor="isStudent" className="text-gray-700">
+              Add Another Major
+            </label>
+          </div>
+        )}
       </div>
       {doubleMajor && <EducationForm />}
     </>

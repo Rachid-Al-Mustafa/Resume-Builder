@@ -1,28 +1,37 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { GrClose } from 'react-icons/gr';
-// eslint-disable-next-line no-unused-vars
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import Input from '../../../../components/input';
 import { handleCloseModal } from '../../../../utils/closeModal';
 import { postRequest } from '../../../../utils/requests';
 import { handleChange } from '../../../../utils/handleChange';
-// import axios from 'axios';
-// import { useDebounce } from 'use-debounce';
+import { AuthContext } from '../../../../Context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const index = ({ setShowEducationalInfoModal }) => {
-  // const { user, dispatch } = useContext();
-  const { university, major } = {
-    university: 'LIU',
-    major: 'Computer Science',
-  };
+  const { user, dispatch } = useContext(AuthContext);
+  const { data: userData } = user;
+  const navigate = useNavigate();
 
+  const educationOptions = [
+    { id: 1, name: "Bachelor's Degree" },
+    { id: 2, name: "Master's Degree" },
+    { id: 3, name: 'PhD' },
+  ];
+
+  const [studying, setStudying] = useState(false);
   const [inputs, setInputs] = useState({
-    university: university || '',
-    major: major || '',
+    level: educationOptions[0].name,
+    highLevel: true,
+    graduated: !studying,
+    university: '',
+    major: '',
+    startDate: '',
+    endDate: '',
+    graduationDate: '',
   });
-  //   const [debouncedValue] = useDebounce(inputs.university, 1000);
-  const [universities, setUniversities] = useState([]);
-  // eslint-disable-next-line no-unused-vars
+  const [universityID, setUniversityID] = useState(
+    userData.profile.university || []
+  );
   const [clicked, setClicked] = useState(false);
   const boxRef = useRef();
 
@@ -31,27 +40,36 @@ const index = ({ setShowEducationalInfoModal }) => {
     setClicked(false);
   };
 
-  const handleEditEducationalInfo = async () => {
-    // dispatch({ type: 'EDIT_EDUCATIONAL_INFO', payload: inputs });
-    setShowEducationalInfoModal(false);
+  const handleEditEducationalInfo = async (e) => {
+    e.preventDefault();
+    dispatch({ type: 'EDIT_EDUCATIONAL_INFO', payload: inputs });
 
-    // await postRequest('/user/edit-profile', inputs);
+    const response = await postRequest('/education/createEducation', inputs);
+    const newUniversities = [...universityID, response.data._id];
+    await setUniversityID(newUniversities);
+
+    const updatedUserData = {
+      ...userData,
+      profile: {
+        ...userData.profile,
+        university: newUniversities,
+      },
+    };
+
+    try {
+      const response2 = await postRequest(
+        '/user/edit-profile',
+        updatedUserData
+      );
+      if (response2.status === 200) {
+        dispatch({ type: 'LOGIN_SUCCESS', payload: response2 });
+        setShowEducationalInfoModal(false);
+        navigate(0);
+      }
+    } catch (error) {
+      console.error('Error updating educational info:', error);
+    }
   };
-
-  //   useEffect(() => {
-  //     if (inputs.university === '') {
-  //       setUniversities([]);
-  //     }
-  //     const getCountries = async () => {
-  //       const { data } = await axios.get(
-  //         `http://universities.hipolabs.com/search?name=${debouncedValue}`
-  //       );
-  //       setUniversities(data);
-  //     };
-  //     if (debouncedValue !== university && !clicked) {
-  //       getCountries();
-  //     }
-  //   }, [debouncedValue]);
 
   const closeModal = (e) =>
     handleCloseModal(e, boxRef, setShowEducationalInfoModal);
@@ -85,29 +103,7 @@ const index = ({ setShowEducationalInfoModal }) => {
               name="university"
               value={inputs.university}
               handleChange={handleInputsChange}
-              close={universities.length > 0}
-              setUniversities={setUniversities}
             />
-            {universities.length > 0 && (
-              <div className="absolute w-full left-0 right-0 top-20 p-2 rounded-md border-2 bg-white flex flex-col gap-1 max-h-[300px] overflow-scroll scrollbar-hide">
-                {universities.map((university, index) => (
-                  <h1
-                    onClick={() => {
-                      setInputs((prev) => ({
-                        ...prev,
-                        university: university.name,
-                      }));
-                      setUniversities([]);
-                      setClicked(true);
-                    }}
-                    className="cursor-pointer"
-                    key={index}
-                  >
-                    {university.name}
-                  </h1>
-                ))}
-              </div>
-            )}
           </div>
           <Input
             label="Major"
@@ -116,6 +112,59 @@ const index = ({ setShowEducationalInfoModal }) => {
             value={inputs.major}
             handleChange={handleInputsChange}
           />
+          <label className="text-gray-700 text-sm font-bold mt-2">
+            Level of Education
+          </label>
+          <select
+            className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            value={inputs.level}
+            name="level"
+            onChange={(e) => handleInputsChange(e)}
+          >
+            {educationOptions.map((option) => (
+              <option key={option.id} value={option.name}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+          <div className="flex items-center mt-2">
+            <input
+              type="checkbox"
+              id="isStudying"
+              checked={studying}
+              onChange={() => setStudying(!studying)}
+              className="mr-2"
+            />
+            <label htmlFor="isStudent" className="text-gray-700">
+              Still Studying
+            </label>
+          </div>
+          {studying ? (
+            <Input
+              label="Expected Graduation Date"
+              type="date"
+              name="graduationDate"
+              value={inputs.graduationDate}
+              handleChange={handleInputsChange}
+            />
+          ) : (
+            <>
+              <Input
+                label="Start Date"
+                type="date"
+                name="startDate"
+                value={inputs.startDate}
+                handleChange={handleInputsChange}
+              />
+              <Input
+                label="End Date"
+                type="date"
+                name="endDate"
+                value={inputs.endDate}
+                handleChange={handleInputsChange}
+              />
+            </>
+          )}
           <button
             type="submit"
             className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"

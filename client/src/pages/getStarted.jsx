@@ -1,12 +1,36 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import EducationForm from '../components/educationForm';
 import PersonalInfoForm from '../components/personalInfoForm';
 import SkillsForm from '../components/skills';
+import { handleChange } from '../utils/handleChange';
+import { postRequest } from '../utils/requests';
+import { AuthContext } from '../Context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function GetStarted() {
+  const { user, dispatch } = useContext(AuthContext);
+  const { data: userData } = user;
+  const navigate = useNavigate();
+
+  const [updatedUserData, setUpdatedUserData] = useState(userData);
+  const handleInputChange = async (e) => {
+    const { name, value } = e.target;
+    console.log(name);
+    console.log(value);
+
+    await setUpdatedUserData((prev) => ({
+      ...prev,
+      [name]: value,
+      profile: {
+        ...prev.profile,
+        [name]: value,
+      },
+    }));
+    console.log(updatedUserData);
+  };
+
   const [currentStep, setCurrentStep] = useState(0);
   const nextStep = () => {
     setCurrentStep(currentStep + 1);
@@ -18,9 +42,17 @@ function GetStarted() {
   const steps = [
     {
       name: 'Personal Info',
-      component: <PersonalInfoForm />,
+      component: (
+        <PersonalInfoForm
+          formData={updatedUserData}
+          handleInputChange={handleInputChange}
+        />
+      ),
     },
-    { name: 'Education', component: <EducationForm /> },
+    {
+      name: 'Education',
+      component: <EducationForm handleInputChange={handleInputChange}/>,
+    },
     { name: 'Contact', component: <SkillsForm /> },
   ];
 

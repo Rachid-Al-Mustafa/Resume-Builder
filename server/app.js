@@ -19,6 +19,8 @@ app.listen(process.env.PORT, () => {
 const AuthRoutes = require("./routes/AuthRoutes");
 const UserRoutes = require("./routes/UserRoutes");
 const SkillRoutes = require('./routes/SkillRoutes');
+const LanguageRoutes = require('./routes/LanguageRoutes');
+const EducationRoutes = require('./routes/EducationRoutes');
 
 app.use("/api", AuthRoutes);
 
@@ -26,6 +28,8 @@ app.use(verifyToken);
 
 app.use("/api/user", UserRoutes);
 app.use('/api/skill', SkillRoutes);
+app.use('/api/language', LanguageRoutes);
+app.use('/api/education', EducationRoutes);
 
 app.use(handleError);
 

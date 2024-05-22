@@ -13,10 +13,17 @@ import BlackModern from '../assets/BlackModern.png';
 import Input from '../components/input';
 import StatusCard from '../components/statusCard';
 
-function Home() {
+function LandingPage() {
   return (
     <>
-      <Header />
+      <div className="flex justify-between px-8 py-4 bg-white shadow-md w-full">
+        <h1 className="text-xl font-bold text-gray-800">Resume Builder</h1>
+        <div className="flex justify-between">
+          <Link to="/SignIn">
+            <Button text={'Sign In'} />
+          </Link>
+        </div>
+      </div>
       <div className="bg-hero bg-cover w-10/12 mx-auto mt-8 relative rounded-lg h-96">
         <main className="flex flex-col absolute bottom-0 rounded-lg justify-start items-start py-6 px-8 space-y-8">
           <h2 className="text-3xl font-bold text-white">
@@ -27,7 +34,7 @@ function Home() {
             odio venenatis, vulputate laoreet mauris at, gravida justo. Aenean
             eu leo quam.
           </p>
-          <Link to="/GetStarted">
+          <Link to="/SignIn">
             <Button text={'Create Your CV'} />
           </Link>
         </main>
@@ -44,34 +51,26 @@ function Home() {
           </p>
         </main>
         <div className="flex flex-col lg:flex-row lg:flex-wrap gap-2 my-4">
-          <Link to="/Templates/Black White Minimalist Resume">
-            <Card
-              title={'euhf'}
-              description={'Black White Minimalist Resume'}
-              image={BWM}
-            />
-          </Link>
-          <Link to="/Templates/Minimalist White and Grey Professional Resume">
-            <Card
-              title={'euhf'}
-              description={'Minimalist White and Grey Professional Resume'}
-              image={WhiteGrey}
-            />
-          </Link>
-          <Link to="/Templates/Blue Professional Modern Resume">
-            <Card
-              title={'euhf'}
-              description={'Blue Professional Modern Resume'}
-              image={BlueProfessional}
-            />
-          </Link>
-          <Link to="/Templates/Black Modern Corporate Resume">
-            <Card
-              title={'euhf'}
-              description={'Black Modern Corporate Resume'}
-              image={BlackModern}
-            />
-          </Link>
+          <Card
+            title={'euhf'}
+            description={'Black White Minimalist Resume'}
+            image={BWM}
+          />
+          <Card
+            title={'euhf'}
+            description={'Minimalist White and Grey Professional Resume'}
+            image={WhiteGrey}
+          />
+          <Card
+            title={'euhf'}
+            description={'Blue Professional Modern Resume'}
+            image={BlueProfessional}
+          />
+          <Card
+            title={'euhf'}
+            description={'Black Modern Corporate Resume'}
+            image={BlackModern}
+          />
         </div>
       </div>
       <CFA />
@@ -109,4 +108,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default LandingPage;

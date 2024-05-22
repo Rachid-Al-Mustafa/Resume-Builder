@@ -1,20 +1,17 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import Header from '../../components/header';
 import EducationalInfo from '../../components/EducationalInfo';
 import UserDataSection from '../../components/UserDataSection';
 import About from '../../components/About';
 import SkillsLanguagesSection from '../../components/SkillsLanguagesSection';
 import HobbiesSection from '../../components/HobbiesSection';
-import { useEffect, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import EditHobbiesModal from './components/EditHobbiesModal';
-
 // MODALS
 import EducationalModal from './components/EducationalModal';
 import EditUserModal from './components/EditUserModal';
 import LanguagesModal from './components/LanguagesModal';
 import SkillsModal from './components/SkillsModal';
-import { getRequest } from '../../utils/requests';
 
 const index = () => {
   const { user, dispatch } = useContext(AuthContext);
@@ -28,27 +25,11 @@ const index = () => {
   const [showSkillsModal, setShowSkillsModal] = useState(false);
 
   const { skills, languages, bio, university, hobbies } = user.data.profile;
-  let University;
-  let Major;
-  if (university.highLevel) {
-    University = university.university;
-    Major = university.major;
-  }
   
   const [Skills, setSkills] = useState(skills);
   const [Languages, setLanguages] = useState(languages);
   const [Hobbies, setHobbies] = useState(hobbies);
 
-
-
-  const removeSkillAt = (index) => {
-    const newSkills = Skills.filter((_, i) => i !== index);
-    setSkills(newSkills);
-  };
-
-  const handleRemoveSkill = (index) => {
-    removeSkillAt(index);
-    };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -93,8 +74,7 @@ const index = () => {
           <div className="lg:flex-[3] xl:flex-[4.5] flex flex-col gap-6">
             <EducationalInfo
               currentUser={user?.data.name === name}
-              university={University}
-              major={Major}
+              uni={university}
               setShowEducationalInfoModal={setShowEducationalInfoModal}
               emptyHeadline="Share your university and major to showcase your academic background."
             />

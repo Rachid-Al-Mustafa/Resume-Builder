@@ -12,6 +12,8 @@ import Home from './pages/home';
 import GetStarted from './pages/getStarted';
 import Templates from './pages/template';
 import Profile from './pages/Profile/index';
+import ShowPDF from './pages/showPDF';
+import LandingPage from './pages/landing';
 
 function App() {
 
@@ -29,6 +31,10 @@ function App() {
       element: <Templates />,
     },
     {
+      path: '/Templates/:resume',
+      element: <ShowPDF />,
+    },
+    {
       path: `/profile`,
       element: <Profile />,
     },
@@ -37,6 +43,10 @@ function App() {
   const publicRoutes = [
     {
       path: '/',
+      element: <LandingPage />,
+    },
+    {
+      path: '/SignIn',
       element: <SignIn />,
     },
     {

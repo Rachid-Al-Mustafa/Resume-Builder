@@ -12,39 +12,37 @@ const index = ({ setShowSkillsModal, skills }) => {
   const navigate = useNavigate();
 
   const Levels = ['Beginner', 'Basic', 'Good', 'Advance', 'Expert'];
-
-  const [selectedSkills, setSelectedSkills] = useState(skills);
   const [skillInput, setSkillInput] = useState('');
-  const boxRef = useRef();
   const [selectedLevel, setSelectedLevel] = useState('');
+  const boxRef = useRef();
   const [skillID, setSkilID] = useState([...skills]);
-  const [skillsData, setSkillsData] = useState(selectedSkills);
+  const [skillsData, setSkillsData] = useState([]);
 
-   useEffect(() => {
-     const fetchSkills = async () => {
-       try {
-         const response = await postRequest('/skill/getSkills', skills);
-         if (response.status === 200) {
-           await setSkillsData(response.data.skills);
-         }
-       } catch (error) {
-         console.error('Error fetching skills:', error);
-       }
-     };
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await postRequest('/skill/getSkills', skillID);
+        if (response.status === 200) {
+          await setSkillsData(response.data.skills);
+        }
+      } catch (error) {
+        console.error('Error fetching skills:', error);
+      }
+    };
 
-     fetchSkills();
-   }, [selectedSkills, skillInput]);
+    fetchSkills();
+  }, [skillInput, skillID]);
 
   const handleRemoveSkill = async (e, Index) => {
     e.preventDefault();
-    console.log(selectedSkills);
-    setSelectedSkills((prev) => {
+
+    setSkilID((prev) => {
       if (Index >= 0 && Index < prev.length) {
-        return prev.filter((_, i) => i !== Index);
+        const newSkills = prev.filter((_, i) => i !== Index);
+        return newSkills;
       }
       return prev;
     });
-    console.log(selectedSkills);
   };
 
   const handleAddSkill = async (e) => {
@@ -55,15 +53,10 @@ const index = ({ setShowSkillsModal, skills }) => {
         name: skillInput.trim(),
         level: selectedLevel.trim(),
       };
-      console.log(newSkill);
       const response = await postRequest('/skill/create', newSkill);
       if (response.status === 200) {
-        console.log(response.data.skill._id)
-        const newSkillID = [response.data.skill._id, ...skillID];
-        console.log(newSkillID);
+        const newSkillID = [...skillID, response.data.skill._id];
         await setSkilID(newSkillID);
-        console.log(skillID);
-        await setSelectedSkills([newSkill, ...selectedSkills]);
         setSkillInput('');
         setSelectedLevel('Beginner');
       }
@@ -80,8 +73,6 @@ const index = ({ setShowSkillsModal, skills }) => {
       },
     };
 
-    console.log(updatedUserData);
-
     try {
       dispatch({
         type: 'EDIT_SKILLS',
@@ -89,7 +80,6 @@ const index = ({ setShowSkillsModal, skills }) => {
       });
 
       const response = await postRequest('/user/edit-profile', updatedUserData);
-      console.log(response);
       if (response.status === 200) {
         dispatch({ type: 'LOGIN_SUCCESS', payload: response });
         setShowSkillsModal(false);
@@ -181,7 +171,6 @@ const index = ({ setShowSkillsModal, skills }) => {
           >
             Save changes
           </button>
-          <div></div>
         </div>
       </div>
     </div>

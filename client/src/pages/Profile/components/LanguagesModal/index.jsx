@@ -1,12 +1,10 @@
-import { BsChevronDown, BsChevronUp } from 'react-icons/bs';
 import { GrClose } from 'react-icons/gr';
 import { handleCloseModal } from '../../../../utils/closeModal';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { languagesData } from './../../../../utils/LanguagesData';
-import Language from './../Language';
 import { postRequest } from '../../../../utils/requests';
 import { AuthContext } from '../../../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import Skill from './../Skill';
 
 const index = ({ setShowLanguagesModal, languages }) => {
   const { user, dispatch } = useContext(AuthContext);
@@ -15,52 +13,34 @@ const index = ({ setShowLanguagesModal, languages }) => {
 
   const Levels = ['Beginner', 'Basic', 'Good', 'Advance', 'Expert'];
 
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
-  let [showLanguagesList, setShowLanguagesList] = useState(false);
   const boxRef = useRef();
-  const [selectedLangauge, setSelectedLangauge] = useState('');
+  const [languageInput, setLanguageInput] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [languageID, setLanguageID] = useState([...languages]);
-  const [languageData, setLanguageData] = useState(selectedLanguages);
+  const [languageData, setLanguageData] = useState([]);
 
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const response = await postRequest('/skill/getSkills', languages);
+        const response = await postRequest('/skill/getSkills', languageID);
+
         if (response.status === 200) {
-          await setSkillsData(response.data.languages);
+          await setLanguageData(response.data.skills);
         }
       } catch (error) {
-        console.error('Error fetching skills:', error);
+        console.error('Error fetching languages:', error);
       }
     };
 
     fetchSkills();
-  }, [selectedSkills, skillInput]);
-
-  const handleLanguageChange = (e) => {
-    const language = e.target.value;
-    const isChecked = e.target.checked;
-
-    if (isChecked) {
-      setSelectedLanguages((prev) => [...prev, language]); // Spread existing array, add new item
-    } else {
-      setSelectedLanguages((prev) => prev.filter((lang) => lang !== language)); // Remove item
-    }
-  };
-
-  const handleEditLanguages = async () => {
-    // dispatch({type: "EDIT_LANGUAGES", payload: selectedLanguages});
-    setShowLanguagesModal(false);
-
-    await postRequest('/user/edit-profile', { languages: selectedLanguages });
-  };
+  }, [languageID, languageInput]);
 
   const handleRemoveLanguage = async (e, Index) => {
     e.preventDefault();
-    setSelectedLanguages((prev) => {
+    setLanguageID((prev) => {
       if (Index >= 0 && Index < prev.length) {
-        return prev.filter((_, i) => i !== Index);
+        const newLanguages = prev.filter((_, i) => i !== Index);
+        return newLanguages;
       }
       return prev;
     });
@@ -69,24 +49,27 @@ const index = ({ setShowLanguagesModal, languages }) => {
   const handleAddLanguage = async (e) => {
     e.preventDefault();
 
-    if (selectedLangauge.trim() !== '' && selectedLangauge.trim() !== '') {
+    if (languageInput.trim() !== '' && selectedLevel.trim() !== '') {
       const newLanguage = {
-        name: selectedLangauge.trim(),
+        name: languageInput.trim(),
         level: selectedLevel.trim(),
       };
       const response = await postRequest('/skill/create', newLanguage);
+      // const addResponse = await postRequest(
+      //   '/language/createLanguage',
+      //   newLanguage
+      // );
       if (response.status === 200) {
-        console.log(response.data.skill._id);
-        const newLanguageID = [response.data.skill._id, ...skillID];
+        const newLanguageID = [...languageID, response.data.skill._id];
         await setLanguageID(newLanguageID);
-        await setSelectedSkills([newLanguage, ...selectedLanguages]);
-        setSelectedLangauge('');
+        console.log(languageID);
+        setLanguageInput('');
         setSelectedLevel('Beginner');
       }
     }
   };
 
-  const handleEditSkills = async (e) => {
+  const handleEditLanguages = async (e) => {
     e.preventDefault();
     const updatedUserData = {
       ...userData,
@@ -114,6 +97,7 @@ const index = ({ setShowLanguagesModal, languages }) => {
   };
 
   const closeModal = (e) => handleCloseModal(e, boxRef, setShowLanguagesModal);
+  const handleLevelChange = (e) => setSelectedLevel(e.target.value);
 
   return (
     <div
@@ -122,7 +106,7 @@ const index = ({ setShowLanguagesModal, languages }) => {
     >
       <div
         ref={boxRef}
-        className="flex flex-col gap-6 p-4 bg-white rounded-md w-full max-w-[500px]"
+        className="flex flex-col h-auto gap-6 p-4 bg-white rounded-md w-full max-w-[500px]"
       >
         <div className="flex items-center justify-between pb-2 border-b-2">
           <div className="text-lg font-semibold text-primary">
@@ -136,52 +120,63 @@ const index = ({ setShowLanguagesModal, languages }) => {
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <div className="relative flex flex-col gap-1 mt-2">
-            <label className="text-4 font-medium" htmlFor="languages">
-              Languages
-            </label>
-            <div
-              onClick={() => setShowLanguagesList((prev) => !prev)}
-              className="p-2 rounded-md border-2 flex items-center justify-between cursor-pointer select-none"
-            >
-              Select languages
-              <div className="flex items-center justify-center">
-                {showLanguagesList ? (
-                  <BsChevronUp size={20} />
-                ) : (
-                  <BsChevronDown size={20} />
-                )}
-              </div>
-            </div> 
-            {showLanguagesList && (
-              <div className="absolute w-full left-0 right-0 top-20 p-2 rounded-md border-2 bg-white flex flex-col gap-1 max-h-[200px] overflow-scroll scroll-smooth">
-                {languagesData?.map((language) => (
-                  <Language
-                    key={language.id}
-                    label={language.label}
-                    checked={selectedLanguages?.includes(language.label)}
-                    onChange={handleLanguageChange}
-                  />
-                ))}
-              </div>
-            )}
-            <div className="flex items-center flex-wrap gap-2 mt-2">
-              {selectedLanguages?.map((lang, index) => (
+          <form
+            onSubmit={handleAddLanguage}
+            className="flex gap-2 p-2 rounded-md border-2"
+          >
+            <input
+              className="placeholder:text-gray-500 font-medium flex-1 outline-none bg-transparent"
+              type="text"
+              placeholder="Add Language"
+              value={languageInput}
+              onChange={(e) => setLanguageInput(e.target.value)}
+            />
+            <select value={selectedLevel} onChange={handleLevelChange}>
+              {Levels.map((level, index) => (
+                <option key={index} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
+          </form>
+          {languageData?.length > 0 && (
+            <div className="flex items-center flex-wrap gap-4 py-3.5 max-h-[300px] overflow-y-scroll overflow-x-hidden scrollbar-hide">
+              {languageData.map((lan, index) => (
                 <div
-                  className="py-1 px-4 rounded-md border-2 dark:border-black"
+                  className={
+                    lan.level === 'Beginner'
+                      ? 'bg-red-400'
+                      : lan.level === 'Basic'
+                      ? 'bg-orange-400'
+                      : lan.level === 'Good'
+                      ? 'bg-gray-400'
+                      : lan.level === 'Advance'
+                      ? 'bg-green-400'
+                      : 'bg-blue-400'
+                  }
                   key={index}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleRemoveLanguage(e, index);
+                  }}
                 >
-                  {lang}
+                  <Skill skill={lan.name} remove={true} />
                 </div>
               ))}
             </div>
-            <button
-              onClick={handleEditLanguages}
-              className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
-            >
-              Save changes
-            </button>
-          </div>
+          )}
+          <button
+            onClick={handleAddLanguage}
+            className="bg-blue-400 text-white p-2 rounded-md mt-4 font-medium"
+          >
+            Add Language
+          </button>
+          <button
+            onClick={(e) => handleEditLanguages(e)}
+            className="bg-blue-500 text-white p-2 rounded-md mt-4 font-medium"
+          >
+            Save changes
+          </button>
         </div>
       </div>
     </div>

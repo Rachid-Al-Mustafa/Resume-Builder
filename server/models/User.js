@@ -23,8 +23,14 @@ const userSchema = new Schema(
       min: [8, 'Password must be at least 8 characters'],
     },
     profile: {
-      profileImage: String,
-      coverImage: String,
+      profileImage: {
+        data: Buffer,
+        contentType: String,
+      },
+      coverImage: {
+        data: Buffer,
+        contentType: String,
+      },
       university: [
         {
           type: mongoose.Schema.Types.ObjectId,

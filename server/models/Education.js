@@ -2,25 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-const validateHighLevelFields = function () {
-  if (this.highLevel) {
-    return this.university && this.major && this.startDate && this.endDate;
-  }
-  return true;
-};
-
-const validateGraduationDate = function () {
-  if (this.graduated) {
-    return Boolean(this.graduationDate);
-  }
-  return true;
-};
-
 const educationSchema = new Schema(
   {
     level: {
       type: String,
-      required: [true, 'Education level is required'],
+      required: true,
     },
     highLevel: {
       type: Boolean,
@@ -32,42 +18,20 @@ const educationSchema = new Schema(
     },
     university: {
       type: String,
-      validate: {
-        validator: validateHighLevelFields,
-        message:
-          'University is required',
-      },
+      required: true,
     },
     major: {
       type: String,
-      validate: {
-        validator: validateHighLevelFields,
-        message:
-          'Major is required',
-      },
+      required: true,
     },
     startDate: {
       type: Date,
-      validate: {
-        validator: validateHighLevelFields,
-        message:
-          'Start Date is required',
-      },
     },
     endDate: {
       type: Date,
-      validate: {
-        validator: validateHighLevelFields,
-        message:
-          'End Date is required',
-      },
     },
     graduationDate: {
       type: Date,
-      validate: {
-        validator: validateGraduationDate,
-        message: 'Graduation date is required',
-      },
     },
   },
   { timestamps: true }
