@@ -15,19 +15,39 @@ function GetStarted() {
   const navigate = useNavigate();
 
   const [updatedUserData, setUpdatedUserData] = useState(userData);
+
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
-    console.log(name);
-    console.log(value);
+    console.log(name, value);
 
-    await setUpdatedUserData((prev) => ({
-      ...prev,
-      [name]: value,
-      profile: {
-        ...prev.profile,
+    await setUpdatedUserData((prev) => {
+      if (name === 'profile.university') {
+        return {
+          ...prev,
+          profile: {
+            ...prev.profile,
+            university: [...prev.profile.university, value],
+          },
+        };
+      }
+
+      if (name.startsWith('profile.')) {
+        const [_, profileField] = name.split('.');
+        return {
+          ...prev,
+          profile: {
+            ...prev.profile,
+            [profileField]: value,
+          },
+        };
+      }
+
+      return {
+        ...prev,
         [name]: value,
-      },
-    }));
+      };
+    });
+
     console.log(updatedUserData);
   };
 
@@ -51,9 +71,23 @@ function GetStarted() {
     },
     {
       name: 'Education',
-      component: <EducationForm handleInputChange={handleInputChange}/>,
+      component: (
+        <EducationForm
+          handleInputChange={handleInputChange}
+          unis={userData.profile.university}
+        />
+      ),
     },
-    { name: 'Contact', component: <SkillsForm /> },
+    {
+      name: 'Contact',
+      component: (
+        <SkillsForm
+          handleInputChange={handleInputChange}
+          skills={userData.profile.skills}
+          languages={userData.profile.languages}
+        />
+      ),
+    },
   ];
 
   const Progress = () => {

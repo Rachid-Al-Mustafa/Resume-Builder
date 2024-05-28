@@ -21,7 +21,7 @@ const PersonalInfoForm = ({ formData, handleInputChange }) => {
           id="full_name"
           type="text"
           value={formData.name}
-          onChange={handleInputChange} // Ensure this is defined
+          onChange={handleInputChange}
           name="name"
           placeholder="E.g.: Johny Smith"
         />
@@ -31,7 +31,7 @@ const PersonalInfoForm = ({ formData, handleInputChange }) => {
           id="location"
           type="text"
           value={formData.profile.location}
-          onChange={handleInputChange} // Correct `onChange`
+          onChange={handleInputChange}
           name="location"
           placeholder="E.g.: Lebanon"
         />
@@ -43,7 +43,7 @@ const PersonalInfoForm = ({ formData, handleInputChange }) => {
           id="phone"
           type="text"
           value={formData.phone}
-          onChange={handleInputChange} // Correct `onChange`
+          onChange={handleInputChange}
           name="phone"
           placeholder="E.g.: 71 927 178"
         />
@@ -53,7 +53,7 @@ const PersonalInfoForm = ({ formData, handleInputChange }) => {
           id="email"
           type="text"
           value={formData.email}
-          onChange={handleInputChange} // Correct `onChange`
+          onChange={handleInputChange}
           name="email"
           placeholder="E.g.: example@gmail.com"
         />
@@ -62,7 +62,7 @@ const PersonalInfoForm = ({ formData, handleInputChange }) => {
           className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="bio"
           value={formData.profile.bio}
-          onChange={handleInputChange} // Correct `onChange`
+          onChange={handleInputChange}
           name="bio"
           type="text"
           placeholder="E.g.: A brief description to show your employers"

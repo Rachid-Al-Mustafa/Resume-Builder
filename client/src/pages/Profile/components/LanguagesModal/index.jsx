@@ -55,10 +55,6 @@ const index = ({ setShowLanguagesModal, languages }) => {
         level: selectedLevel.trim(),
       };
       const response = await postRequest('/skill/create', newLanguage);
-      // const addResponse = await postRequest(
-      //   '/language/createLanguage',
-      //   newLanguage
-      // );
       if (response.status === 200) {
         const newLanguageID = [...languageID, response.data.skill._id];
         await setLanguageID(newLanguageID);

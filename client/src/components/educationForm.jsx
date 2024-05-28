@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Input from './input';
 import { handleChange } from '../utils/handleChange';
+import { postRequest } from '../utils/requests';
 
 const EducationForm = ({ handleInputChange }) => {
   const educationOptions = [
@@ -12,8 +13,6 @@ const EducationForm = ({ handleInputChange }) => {
 
   const [isStudent, setIsStudent] = useState(false);
   const [completed, setCompleted] = useState(false);
-  const [doubleMajor, setDoubleMajor] = useState(false);
-  const [isNewEducationAdded, setIsNewEducationAdded] = useState(false);
   const [Data, setData] = useState({
     level: '',
     highLevel: true,
@@ -24,80 +23,35 @@ const EducationForm = ({ handleInputChange }) => {
     endDate: '',
     graduationDate: '',
   });
-
   const [educationLevel, setEducationLevel] = useState('');
 
-  const [inputs, setInputs] = useState([]);
-  const [arrayIndex, setArrayIndex] = useState(0);
-  const [universityID, setUniversityID] = useState([]);
-
-  const handleSaveData = async (e) => {
-    e.preventDefault();
-
-    await setInputs(inputs.push(Data));
-    console.log(inputs);
-   };
-
-  // useEffect(() => {
-  //   const handleSaveEducation = () => {
-  //     handleInputChange({ university: universityID });
-  //   };
-  //   handleSaveEducation();
-  // }, [universityID, handleInputChange]);
-
-  const handleInputsChange = (e) => {
-    e.preventDefault();
-    if (e.target.name === 'level') {
-      setEducationLevel(e.target.value);
+  const handleSaveData = async () => {
+    try {
+      const response = await postRequest('/education/createEducation', Data);
+      handleInputChange({
+        target: {
+          name: 'profile.university',
+          value: response.data._id,
+        },
+      });
+    } catch (error) {
+      console.error('Error saving education data:', error);
     }
-    const { name, value } = e.target;
-    const newData = {
-      ...Data,
-      [name]: value
-    }
-    setData(newData);
   };
 
-  // const handleEditEducationalInfo = async (e) => {
-  //   e.preventDefault();
-  //   dispatch({ type: 'EDIT_EDUCATIONAL_INFO', payload: inputs[arrayIndex] });
-
-  //   const response = await postRequest(
-  //     '/education/createEducation',
-  //     inputs[arrayIndex]
-  //   );
-  //   const newUniversities = [...universityID, response.data._id];
-  //   console.log(newUniversities);
-  //   await setUniversityID(newUniversities);
-  // };
-
- const handleNewEducation = async (e) => {
-   e.preventDefault();
-
-   console.log(inputs);
-
-   const newEducation = {
-     level: educationOptions[0].name,
-     highLevel: true,
-     graduated: !isStudent,
-     university: '',
-     major: '',
-     startDate: '',
-     endDate: '',
-     graduationDate: '',
+   const handleInputsChange = (e) => {
+     const { name, value } = e.target;
+     setData((prevData) => ({
+       ...prevData,
+       [name]: value,
+     }));
    };
 
-   setData(newEducation);
-   setIsNewEducationAdded(true);
-   setDoubleMajor(!doubleMajor);
-  };
-  
-  useEffect(() => {
-    if (isNewEducationAdded) {
-      setArrayIndex(inputs.length);
-      setIsNewEducationAdded(false);
-    }
-  }, [inputs, isNewEducationAdded]);
+
+    const handleCheckboxChange = (setter) => (e) => {
+      setter(e.target.checked);
+    };
+
 
   return (
     <>
@@ -144,10 +98,12 @@ const EducationForm = ({ handleInputChange }) => {
             id="isStudent"
             name="graduated"
             checked={isStudent}
-            value={isStudent}
             onChange={(e) => {
               setIsStudent(!isStudent);
-              handleInputsChange(e);
+              setData((prevData) => ({
+                ...prevData,
+                graduated: !e.target.checked,
+              }));
             }}
             className="mr-2"
           />
@@ -193,8 +149,7 @@ const EducationForm = ({ handleInputChange }) => {
             id="isDone"
             checked={completed}
             onChange={(e) => {
-              setCompleted(!completed);
-              handleSaveData(e);
+              setCompleted(e.target.checked);
             }}
             className="mr-2"
           />
@@ -202,22 +157,7 @@ const EducationForm = ({ handleInputChange }) => {
             I have Completed the above education.
           </label>
         </div>
-        {completed && (
-          <div className="flex items-center mt-2">
-            <input
-              type="checkbox"
-              id="isDoubleMajor"
-              checked={doubleMajor}
-              onChange={(e) => handleNewEducation(e)}
-              className="mr-2"
-            />
-            <label htmlFor="isStudent" className="text-gray-700">
-              Add Another Major
-            </label>
-          </div>
-        )}
       </div>
-      {doubleMajor && <EducationForm />}
     </>
   );
 };
