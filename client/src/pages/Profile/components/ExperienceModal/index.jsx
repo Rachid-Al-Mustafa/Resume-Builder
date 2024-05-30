@@ -7,30 +7,22 @@ import { handleChange } from '../../../../utils/handleChange';
 import { AuthContext } from '../../../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const index = ({ setShowEducationalInfoModal }) => {
+const index = ({ setShowExperienceModal }) => {
   const { user, dispatch } = useContext(AuthContext);
   const { data: userData } = user;
   const navigate = useNavigate();
 
-  const educationOptions = [
-    { id: 1, name: "Bachelor's Degree" },
-    { id: 2, name: "Master's Degree" },
-    { id: 3, name: 'PhD' },
-  ];
-
-  const [studying, setStudying] = useState(false);
+  const [working, setWorking] = useState(false);
   const [inputs, setInputs] = useState({
-    level: educationOptions[0].name,
-    highLevel: true,
-    graduated: false,
-    university: '',
-    major: '',
+    stillWorking: false,
+    position: '',
+    companyName: '',
+    tasks: '',
     startDate: '',
     endDate: '',
-    graduationDate: '',
   });
-  const [universityID, setUniversityID] = useState(
-    userData.profile.university || []
+  const [experienceID, setExperienceID] = useState(
+    userData.profile.experience || []
   );
   const [clicked, setClicked] = useState(false);
   const boxRef = useRef();
@@ -40,19 +32,20 @@ const index = ({ setShowEducationalInfoModal }) => {
     setClicked(false);
   };
 
-  const handleEditEducationalInfo = async (e) => {
+  const handleEditExperienceInfo = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'EDIT_EDUCATIONAL_INFO', payload: inputs });
+    dispatch({ type: 'EDIT_EXPERIENCE_INFO', payload: inputs }); 
 
-    const response = await postRequest('/education/createEducation', inputs);
-    const newUniversities = [...universityID, response.data._id];
-    await setUniversityID(newUniversities);
+    const response = await postRequest('/experience/experience', inputs);
+    console.log(response);
+    const newExperience = [...experienceID, response.data._id];
+    await setExperienceID(newExperience);
 
     const updatedUserData = {
       ...userData,
       profile: {
         ...userData.profile,
-        university: newUniversities,
+        experience: newExperience,
       },
     };
 
@@ -63,7 +56,7 @@ const index = ({ setShowEducationalInfoModal }) => {
       );
       if (response2.status === 200) {
         dispatch({ type: 'LOGIN_SUCCESS', payload: response2 });
-        setShowEducationalInfoModal(false);
+        handleEditExperienceInfo(false);
         navigate(0);
       }
     } catch (error) {
@@ -71,8 +64,7 @@ const index = ({ setShowEducationalInfoModal }) => {
     }
   };
 
-  const closeModal = (e) =>
-    handleCloseModal(e, boxRef, setShowEducationalInfoModal);
+  const closeModal = (e) => handleCloseModal(e, boxRef, setShowExperienceModal);
 
   return (
     <div
@@ -80,16 +72,16 @@ const index = ({ setShowEducationalInfoModal }) => {
       className="fixed top-0 left-0 right-0 bottom-0 w-full h-screen bg-black/40 z-50 flex items-center justify-center px-2 overflow-hidden max-h-screen"
     >
       <form
-        onSubmit={handleEditEducationalInfo}
+        onSubmit={handleEditExperienceInfo}
         ref={boxRef}
         className="flex flex-col gap-6 p-4 bg-white rounded-md w-full max-w-[500px]"
       >
         <div className="flex items-center justify-between pb-2 border-b-2">
           <div className="text-lg font-semibold text-primary">
-            Edit educational information
+            Edit Experience Information
           </div>
           <div
-            onClick={() => setShowEducationalInfoModal(false)}
+            onClick={() => setShowExperienceModal(false)}
             className="bg-gray-200 w-[35px] h-[35px] flex items-center justify-center rounded-full cursor-pointer"
           >
             <GrClose size={20} />
@@ -98,60 +90,53 @@ const index = ({ setShowEducationalInfoModal }) => {
         <div className="flex flex-col gap-3">
           <div className="relative">
             <Input
-              label="University"
-              placeholder="Your University"
-              name="university"
+              label="Company"
+              placeholder="Your Company Name"
+              name="companyName"
               value={inputs.university}
               handleChange={handleInputsChange}
             />
           </div>
           <Input
-            label="Major"
-            placeholder="Your Major"
-            name="major"
+            label="Position"
+            placeholder="Your Position"
+            name="position"
             value={inputs.major}
             handleChange={handleInputsChange}
           />
-          <label className="text-gray-700 text-sm font-bold mt-2">
-            Level of Education
-          </label>
-          <select
-            className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            value={inputs.level}
-            name="level"
-            onChange={(e) => handleInputsChange(e)}
-          >
-            {educationOptions.map((option) => (
-              <option key={option.id} value={option.name}>
-                {option.name}
-              </option>
-            ))}
-          </select>
+          <textarea
+            className="flex-1 px-4 py-3.5 rounded-md border-[2px] border-grayMedium bg-grayLight placeholder:text-[#8590AA] bg-transparent font-medium"
+            label="Tasks"
+            placeholder="Tasks you where in charge of"
+            name="tasks"
+            value={inputs.tasks}
+            onChange={handleInputsChange}
+          />
           <div className="flex items-center mt-2">
             <input
               type="checkbox"
-              id="isStudying"
-              checked={studying}
+              id="isWorking"
+              checked={working}
               onChange={() => {
-                const newStudyingState = !studying;
-                setStudying(newStudyingState);
+                const newWorkingState = !working;
+                setWorking(newWorkingState);
                 setInputs((inputs) => ({
                   ...inputs,
-                  graduated: newStudyingState,
+                  stillWorking: newWorkingState,
                 }));
               }}
               className="mr-2"
             />
-            <label htmlFor="isStudent" className="text-gray-700">
-              Still Studying
+            <label htmlFor="isWorking" className="text-gray-700">
+              Still Working
             </label>
           </div>
-          {studying ? (
+          {working ? (
             <Input
-              label="Expected Graduation Date"
+              label="Employment Date"
               type="date"
-              name="graduationDate"
-              value={inputs.graduationDate}
+              name="startDate"
+              value={inputs.startDate}
               handleChange={handleInputsChange}
             />
           ) : (

@@ -8,6 +8,6 @@ const {
 
 router.post('/experience', NewExperience);
 router.post('/experiences', PopulateExperiences);
-router.delete('/experience/:id', DeleteExperience);
+router.post('/:id', DeleteExperience);
 
 module.exports = router;

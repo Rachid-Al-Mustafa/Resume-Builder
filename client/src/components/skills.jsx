@@ -10,10 +10,12 @@ const SkillLanguageProjectForm = ({ handleInputChange, skills, languages }) => {
   const { data: userData } = user;
 
   const Levels = ['Beginner', 'Basic', 'Good', 'Advance', 'Expert'];
+
   const [skillInput, setSkillInput] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('');
   const [skillID, setSkilID] = useState([...skills]);
   const [skillsData, setSkillsData] = useState([]);
+
   const handleLevelChange = (e) => setSelectedLevel(e.target.value);
   const handleLLevelChange = (e) => setSelectedLLevel(e.target.value);
 
@@ -21,9 +23,18 @@ const SkillLanguageProjectForm = ({ handleInputChange, skills, languages }) => {
   const [selectedLLevel, setSelectedLLevel] = useState('');
   const [languageID, setLanguageID] = useState([...languages]);
   const [languageData, setLanguageData] = useState([]);
-  const [projects, setProjects] = useState([
-    { company: '', duration: '', description: '' },
-  ]);
+
+  const [projects, setProjects] = useState({
+    companyName: '',
+    position: '',
+    tasks: '',
+    startDate: '',
+    endDate: '',
+    stillWorking: false,
+  });
+  const [experienceData, setExperienceData] = useState([]);
+  const [isWorking, setIsWorking] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
     const fetchSkills = async () => {
@@ -71,13 +82,6 @@ const SkillLanguageProjectForm = ({ handleInputChange, skills, languages }) => {
           setLanguageID(newLanguageID);
           setLanguageInput('');
           setSelectedLLevel('Beginner');
-
-          handleInputChange({
-            target: {
-              name: 'profile.languages',
-              value: newLanguageID,
-            },
-          });
         }
       }
     },
@@ -90,12 +94,6 @@ const SkillLanguageProjectForm = ({ handleInputChange, skills, languages }) => {
       setLanguageID((prev) => {
         if (Index >= 0 && Index < prev.length) {
           const newLanguages = prev.filter((_, i) => i !== Index);
-          handleInputChange({
-            target: {
-              name: 'profile.languages',
-              value: newLanguages,
-            },
-          });
           return newLanguages;
         }
         return prev;
@@ -119,13 +117,6 @@ const SkillLanguageProjectForm = ({ handleInputChange, skills, languages }) => {
           setSkilID(newSkillID);
           setSkillInput('');
           setSelectedLevel('Beginner');
-
-          handleInputChange({
-            target: {
-              name: 'profile.skills',
-              value: newSkillID,
-            },
-          });
         }
       }
     },
@@ -138,12 +129,6 @@ const SkillLanguageProjectForm = ({ handleInputChange, skills, languages }) => {
       setSkilID((prev) => {
         if (Index >= 0 && Index < prev.length) {
           const newSkills = prev.filter((_, i) => i !== Index);
-          handleInputChange({
-            target: {
-              name: 'profile.skills',
-              value: newSkills,
-            },
-          });
           return newSkills;
         }
         return prev;
@@ -152,21 +137,44 @@ const SkillLanguageProjectForm = ({ handleInputChange, skills, languages }) => {
     [handleInputChange]
   );
 
-  const handleProjectChange = (index, field, value) => {
-    const updatedProjects = [...projects];
-    updatedProjects[index][field] = value;
-    setProjects(updatedProjects);
+  const handleProjectChange = async (field, value) => {
+    const updatedProjects = { ...projects, [field]: value };
+    console.log(updatedProjects);
+    await setProjects(updatedProjects);
   };
 
-  const addProject = () => {
-    setProjects([...projects, { company: '', duration: '', description: '' }]);
-  };
+  useEffect(() => {
+    setIsWorking(projects.stillWorking);
+  }, [projects.stillWorking]);
 
-  const removeProject = (index) => {
-    const updatedProjects = [...projects];
-    updatedProjects.splice(index, 1);
-    setProjects(updatedProjects);
-  };
+const handleConfirmation = async (e) => {
+  e.preventDefault();
+  if (e.target.checked) {
+    const response = await postRequest('/experience/experience', projects);
+    if (response.status === 200) {
+      console.log(response.data);
+      const newExperienceID = [response.data._id];
+      setExperienceData(newExperienceID);
+      try {
+        const dataToSend = {
+          skills: skillID,
+          languages: languageID,
+          experience: [response.data._id],
+        };
+
+        handleInputChange({
+          target: {
+            name: 'profile.',
+            value: dataToSend,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+        Swal.fire('Error', 'Failed to add data', 'error');
+      }
+    }
+  }
+};
 
   return (
     <div className="flex flex-col container mx-auto items-start">
@@ -288,53 +296,88 @@ const SkillLanguageProjectForm = ({ handleInputChange, skills, languages }) => {
         </div>
       </div>
 
-      {/* Projects/Experience */}
-      <div className="flex flex-col items-start">
+      {/* Experience */}
+      <div className="flex flex-col items-start w-80">
         <h2 className="text-lg font-bold mb-2">Experience</h2>
-        {projects.map((project, index) => (
-          <div key={index} className="mb-4 flex flex-row gap-2 items-start">
+        <div className="mb-4 flex flex-col gap-2 items-start w-full">
+          <input
+            type="text"
+            value={projects.companyName}
+            onChange={(e) => handleProjectChange('companyName', e.target.value)}
+            placeholder="Company Name"
+            className="border rounded px-3 py-1 mb-2 focus:outline-none focus:shadow-outline w-full"
+          />
+          <input
+            type="text"
+            value={projects.position}
+            onChange={(e) => handleProjectChange('position', e.target.value)}
+            placeholder="Position"
+            className="border rounded px-3 py-1 mb-2 focus:outline-none focus:shadow-outline w-full"
+          />
+          <div className="flex flex-row gap-3 items-start align-middle mt-2 p-1">
             <input
-              type="text"
-              value={project.company}
-              onChange={(e) =>
-                handleProjectChange(index, 'company', e.target.value)
-              }
-              placeholder="Company Name"
-              className="border rounded px-3 py-1 mb-2 focus:outline-none focus:shadow-outline"
+              type="checkbox"
+              id="isWorking"
+              name="stillWorking"
+              checked={isWorking}
+              onChange={async (e) => {
+                const checked = e.target.checked;
+                setIsWorking(checked);
+                await setProjects((prevData) => ({
+                  ...prevData,
+                  stillWorking: checked,
+                }));
+              }}
+              className="mr-2"
             />
-            <input
-              type="text"
-              value={project.duration}
-              onChange={(e) =>
-                handleProjectChange(index, 'duration', e.target.value)
-              }
-              placeholder="Duration"
-              className="border rounded px-3 py-1 mb-2 focus:outline-none focus:shadow-outline"
-            />
-            <textarea
-              value={project.description}
-              onChange={(e) =>
-                handleProjectChange(index, 'description', e.target.value)
-              }
-              placeholder="Description (Optional)"
-              className="border rounded px-3 py-1 mb-2 focus:outline-none focus:shadow-outline resize-none"
-            />
-            <button
-              type="button"
-              onClick={() => removeProject(index)}
-              className="px-3 py-1 bg-red-500 text-white rounded"
-            >
-              Remove Experience
-            </button>
+            <label htmlFor="isWorking" className="text-gray-700">
+              Still Working
+            </label>
           </div>
-        ))}
-        <button
-          type="button"
-          onClick={addProject}
-          className="px-3 py-1 bg-blue-500 text-white rounded"
-        >
-          Add Experience
-        </button>
+          <div className="flex flex-row gap-3 items-start w-full mt-2">
+            <label>Start Date</label>
+            <input
+              type="date"
+              value={projects.startDate}
+              onChange={(e) => handleProjectChange('startDate', e.target.value)}
+              className="border rounded px-3 py-1 mb-2 focus:outline-none focus:shadow-outline w-full"
+            />
+          </div>
+          {!isWorking && (
+            <div className="flex flex-row gap-3 items-start w-full mt-2">
+              <label>End Date</label>
+              <input
+                type="date"
+                value={projects.endDate}
+                onChange={(e) => handleProjectChange('endDate', e.target.value)}
+                className="border rounded px-3 py-1 mb-2 focus:outline-none focus:shadow-outline w-full"
+              />
+            </div>
+          )}
+          <textarea
+            value={projects.tasks}
+            onChange={(e) => handleProjectChange('tasks', e.target.value)}
+            placeholder="Tasks you were responsible for!"
+            className="border rounded px-3 py-1 mb-2 focus:outline-none focus:shadow-outline w-full"
+          />
+        </div>
+      </div>
+      <div className="flex flex-row gap-3 items-start align-middle mt-2 p-1">
+        <input
+          type="checkbox"
+          id="completed"
+          name="completed"
+          checked={completed}
+          onChange={async (e) => {
+            const checked = e.target.checked;
+            setCompleted(checked);
+            handleConfirmation(e);
+          }}
+          className="mr-2"
+        />
+        <label htmlFor="completed" className="text-gray-700">
+          Confirm
+        </label>
       </div>
     </div>
   );

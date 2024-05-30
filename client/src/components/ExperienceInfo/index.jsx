@@ -9,27 +9,27 @@ import { postRequest } from '../../utils/requests';
 import moment from 'moment';
 
 const index = ({
-  setShowEducationalInfoModal,
+  setShowExperienceModal,
   currentUser,
-  uni,
+  experience,
   emptyHeadline,
 }) => {
   const { user, dispatch } = useContext(AuthContext);
   const { data: userData } = user;
   const navigate = useNavigate();
 
-  const [uniID, setUniID] = useState(uni);
-  const [uniData, setUniData] = useState([]);
+  const [experienceID, setExperienceID] = useState(experience);
+  const [experienceData, setExperienceData] = useState([]);
 
   useEffect(() => {
     const fetchSkills = async () => {
       try {
         const response = await postRequest(
-          '/education/populateEducation',
-          uniID
+          '/experience/experiences',
+          experienceID
         );
         if (response.status === 200) {
-          await setUniData(response.data.data);
+          await setExperienceData(response.data.populatedData);
         }
       } catch (error) {
         console.error('Error fetching skills:', error);
@@ -37,14 +37,15 @@ const index = ({
     };
 
     fetchSkills();
-  }, [uniID, userData]);
+  }, [experienceID, userData]);
 
   const handleRemoveEducation = async (e, index, id) => {
     e.preventDefault();
     try {
-      const response = await postRequest(`/education/deleteEducation/${id}`);
+      console.log(id);
+      const response = await postRequest(`/experience/${id}`);
       if (response.status === 200) {
-        setUniID((prev) => prev.filter((_, i) => i !== index));
+        setExperienceID((prev) => prev.filter((_, i) => i !== index));
         console.log('Successfully deleted education');
       }
     } catch (error) {
@@ -58,7 +59,7 @@ const index = ({
     <div className="bg-white drop-shadow-lg max-w-full p-4 rounded-md h-fit flex flex-col gap-4">
       <div className="flex flex-col gap-3">
         <div className="flex items-start justify-between font-semibold text-lg mb-2">
-          <span className="text-primary">Educational Information</span>{' '}
+          <span className="text-primary">Experience Information</span>{' '}
           {currentUser &&
             (!add ? (
               <HiPencil
@@ -70,7 +71,7 @@ const index = ({
               <>
                 <div className="flex flex-row gap-1">
                   <IoAddCircleSharp
-                    onClick={() => setShowEducationalInfoModal(true)}
+                    onClick={() => setShowExperienceModal(true)}
                     className="cursor-pointer"
                     size={30}
                   />
@@ -83,56 +84,56 @@ const index = ({
               </>
             ))}
         </div>
-        {uniData.length > 0 ? (
-          uniData.map((univ, index) => (
+        {experienceData?.length > 0 ? (
+          experienceData.map((exp, index) => (
             <div
-              key={univ._id} // Key is crucial when mapping over items
+              key={exp._id}
               className={`relative flex flex-col gap-2 ${
                 add && 'outline outline-1 rounded-md m-4'
               }`}
             >
               {add && (
                 <div
-                  onClick={(e) => handleRemoveEducation(e, index, univ._id)}
+                  onClick={(e) => handleRemoveEducation(e, index, exp._id)}
                   className="absolute -top-[12px] -right-[12px] bg-white p-1.5 rounded-full font-medium cursor-pointer"
                 >
                   <GrClose className="font-medium" size={15} />
                 </div>
               )}
               <div className="flex justify-start gap-4">
-                <div className="w-[100px] font-medium">University</div>
+                <div className="w-[100px] font-medium">Company</div>
                 <span
                   title={
-                    univ.university.length > 30 ? univ.university : undefined
+                    exp.companyName.length > 30 ? exp.companyName : undefined
                   }
-                  className="text-gray-500 max-w-[270px] overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="text-gray-500 justify-start max-w-[270px] overflow-hidden text-ellipsis whitespace-nowrap"
                 >
-                  {univ.university}
+                  {exp.companyName}
                 </span>
               </div>
               <div className="flex justify-start gap-4">
-                <div className="w-[100px] font-medium">Major</div>
+                <div className="w-[100px] font-medium">Position</div>
                 <span
                   className="text-gray-500"
-                  title={univ.major.length > 30 ? univ.major : undefined}
+                  title={exp.position.length > 30 ? exp.position : undefined}
                 >
-                  {univ.level}, in {univ.major}
+                  {exp.position}
                 </span>
               </div>
-              {univ.graduated ? (
+              {exp.stillWorking ? (
                 <div className="flex justify-start gap-4">
-                  <div className="w-[100px] font-medium">Graduation</div>
+                  <div className="w-[100px] font-medium">Started In</div>
                   <span className="text-gray-500">
-                    {moment(univ.graduationDate).format('DD MMMM YYYY')}
+                    {moment(exp.startDate).format('DD MMMM YYYY')}
                   </span>
                 </div>
               ) : (
                 <div className="flex justify-start gap-4">
-                  <div className="w-[100px] font-medium">Date</div>
-                    <span className="text-gray-500">
-                      {console.log(univ.startDate)}
-                    {moment(univ.startDate).format('DD MMMM YYYY')} {' - '}
-                    {moment(univ.endDate).format('DD MMMM YYYY')}
+                  <div className="w-[100px] font-medium">Duration</div>
+                  <span className="text-gray-500">
+                    {moment(exp.startDate).format('DD MMMM YYYY')}
+                    {' - '}
+                    {moment(exp.endDate).format('DD MMMM YYYY')}
                   </span>
                 </div>
               )}

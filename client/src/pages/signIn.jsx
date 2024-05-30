@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { useState, useContext } from 'react';
 import Button from '../components/button';
@@ -10,9 +9,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { handleChange } from '../utils/handleChange';
 import { postRequest, setAuthToken } from '../utils/requests';
 import { AuthContext } from '../Context/AuthContext';
-// import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-// import {jwt_decode} from 'jwt-decode';
-// import axios from 'axios';
 import Swal from 'sweetalert2';
 
 function SignIn() {
@@ -20,6 +16,7 @@ function SignIn() {
 
   localStorage.removeItem('user');
   localStorage.removeItem('authToken');
+  localStorage.removeItem('resumeData');
 
   let [inputs, setInputs] = useState({});
   let [error, setError] = useState({});

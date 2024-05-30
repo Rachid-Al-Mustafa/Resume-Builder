@@ -45,7 +45,7 @@ const PopulateExperiences = async (req, res) => {
       _id: { $in: experienceIds },
     });
 
-    res.status(200).json({ data: populatedData });
+    res.status(200).json({ populatedData });
   } catch (error) {
     console.error('Error retrieving experiences:', error);
     res.status(500).json({ error: 'Internal Server Error' });

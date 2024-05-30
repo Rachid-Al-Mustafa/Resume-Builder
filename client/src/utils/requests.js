@@ -40,7 +40,8 @@ const makeRequest = async (
 
     return response;
   } catch (error) {
-    if (errorHandler) {
+    // Check if errorHandler is a function before calling it
+    if (typeof errorHandler === 'function') {
       errorHandler(error);
     }
     console.log(error);

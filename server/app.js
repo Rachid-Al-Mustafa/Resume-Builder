@@ -22,6 +22,7 @@ const SkillRoutes = require('./routes/SkillRoutes');
 const LanguageRoutes = require('./routes/LanguageRoutes');
 const EducationRoutes = require('./routes/EducationRoutes');
 const ExperienceRoutes = require('./routes/ExperienceRoutes');
+const ResumeRoutes = require('./routes/ResumeRoutes');
 
 app.use("/api", AuthRoutes);
 
@@ -32,6 +33,7 @@ app.use('/api/skill', SkillRoutes);
 app.use('/api/language', LanguageRoutes);
 app.use('/api/education', EducationRoutes);
 app.use('/api/experience', ExperienceRoutes);
+app.use('/api/resume', ResumeRoutes);
 
 app.use(handleError);
 

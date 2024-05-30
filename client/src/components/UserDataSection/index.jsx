@@ -5,7 +5,7 @@ import { AuthContext } from '../../Context/AuthContext';
 import { imageDB } from '../../utils/FirebaseConfig';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { v4 } from 'uuid';
-import ProfilePicture from '../../assets/hero.png';
+import ProfilePicture from '../../assets/noProfile.png';
 import { FaLocationDot } from 'react-icons/fa6';
 import { FaPhoneAlt } from 'react-icons/fa';
 

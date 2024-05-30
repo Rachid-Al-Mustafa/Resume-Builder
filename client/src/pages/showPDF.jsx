@@ -28,7 +28,7 @@ function ShowPDF() {
             odio venenatis, vulputate laoreet mauris at, gravida justo. Aenean
             eu leo quam.
           </p>
-          <button className="bg-blue-900 text-white py-1.5 px-2.5 rounded-md text-lg font-medium mt-4">
+          <button onClick={handleAddResume} className="bg-blue-900 text-white py-1.5 px-2.5 rounded-md text-lg font-medium mt-4">
             Add to My Resumes
           </button>
         </div>

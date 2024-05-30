@@ -88,20 +88,17 @@ const Resume = (props) => (
       </View>
       <Experience />
     </View>
-    <Text style={styles.footer}>This IS the candidate you are looking for</Text>
   </Page>
 );
 
 const App = () => (
   <Document
-    author="Luke Skywalker"
+    author="Raed Al Mustafa"
     keywords="awesome, resume, start wars"
-    subject="The resume of Luke Skywalker"
+    subject="The resume of Raed Al Mustafa"
     title="Resume"
   >
     <Resume size="A4" />
-    {/* <Resume orientation="landscape" size="A4" /> */}
-    {/* <Resume size={[380, 1250]} /> */}
   </Document>
 );
 

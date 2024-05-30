@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { AuthContext } from '../../Context/AuthContext';
 
 const styles = StyleSheet.create({
   container: {
@@ -38,11 +39,10 @@ const styles = StyleSheet.create({
     justifySelf: 'flex-end',
   },
 });
-
 const Header = () => (
   <View style={styles.container}>
     <View style={styles.detailColumn}>
-      <Text style={styles.name}>Luke Skywalker</Text>
+      <Text style={styles.name}></Text>
       <Text style={styles.subtitle}>Jedi Master</Text>
     </View>
     <View style={styles.linkColumn}>
